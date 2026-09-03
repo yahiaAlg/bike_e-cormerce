@@ -8,22 +8,30 @@
    state instead of keeping their own.
 ============================================================ */
 (function () {
-  var STORAGE_KEYS = { cart: "arko_cart", wishlist: "arko_wishlist", compare: "arko_compare" };
+  var STORAGE_KEYS = {
+    cart: "arko_cart",
+    wishlist: "arko_wishlist",
+    compare: "arko_compare",
+  };
 
   function load(key) {
     try {
       var raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : [];
-    } catch (e) { return []; }
+    } catch (e) {
+      return [];
+    }
   }
   function save(key, val) {
-    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+    try {
+      localStorage.setItem(key, JSON.stringify(val));
+    } catch (e) {}
   }
 
   var state = {
     cart: load(STORAGE_KEYS.cart),
     wishlist: load(STORAGE_KEYS.wishlist),
-    compare: load(STORAGE_KEYS.compare)
+    compare: load(STORAGE_KEYS.compare),
   };
 
   /* ---------- Cart ---------- */
@@ -35,11 +43,19 @@
     var qty = opts.qty || 1;
     var variant = opts.variant || {};
     var key = cartLineKey(productId, variant);
-    var line = state.cart.find(function (l) { return l.key === key; });
+    var line = state.cart.find(function (l) {
+      return l.key === key;
+    });
     if (line) {
       line.qty += qty;
     } else {
-      state.cart.push({ key: key, productId: productId, type: opts.type || "motorcycle", variant: variant, qty: qty });
+      state.cart.push({
+        key: key,
+        productId: productId,
+        type: opts.type || "motorcycle",
+        variant: variant,
+        qty: qty,
+      });
     }
     save(STORAGE_KEYS.cart, state.cart);
     refreshBadges();
@@ -47,13 +63,17 @@
     return line || state.cart[state.cart.length - 1];
   }
   function removeFromCart(key) {
-    state.cart = state.cart.filter(function (l) { return l.key !== key; });
+    state.cart = state.cart.filter(function (l) {
+      return l.key !== key;
+    });
     save(STORAGE_KEYS.cart, state.cart);
     refreshBadges();
     renderCartDrawer();
   }
   function setCartQty(key, qty) {
-    var line = state.cart.find(function (l) { return l.key === key; });
+    var line = state.cart.find(function (l) {
+      return l.key === key;
+    });
     if (!line) return;
     line.qty = Math.max(1, qty);
     save(STORAGE_KEYS.cart, state.cart);
@@ -61,11 +81,15 @@
     renderCartDrawer();
   }
   function cartCount() {
-    return state.cart.reduce(function (n, l) { return n + l.qty; }, 0);
+    return state.cart.reduce(function (n, l) {
+      return n + l.qty;
+    }, 0);
   }
   function cartTotal() {
     return state.cart.reduce(function (sum, l) {
-      var p = window.ARKO.getMotorcycle(l.productId) || window.ARKO.getAccessory(l.productId);
+      var p =
+        window.ARKO.getMotorcycle(l.productId) ||
+        window.ARKO.getAccessory(l.productId);
       if (!p) return sum;
       var base = p.price;
       if (l.variant && l.variant.batteryDelta) base += l.variant.batteryDelta;
@@ -74,12 +98,19 @@
   }
 
   /* ---------- Wishlist ---------- */
-  function isWishlisted(productId) { return state.wishlist.indexOf(productId) !== -1; }
+  function isWishlisted(productId) {
+    return state.wishlist.indexOf(productId) !== -1;
+  }
   function toggleWishlist(productId) {
     var idx = state.wishlist.indexOf(productId);
     var added;
-    if (idx === -1) { state.wishlist.push(productId); added = true; }
-    else { state.wishlist.splice(idx, 1); added = false; }
+    if (idx === -1) {
+      state.wishlist.push(productId);
+      added = true;
+    } else {
+      state.wishlist.splice(idx, 1);
+      added = false;
+    }
     save(STORAGE_KEYS.wishlist, state.wishlist);
     refreshBadges();
     return added;
@@ -87,7 +118,9 @@
 
   /* ---------- Compare ---------- */
   var COMPARE_LIMIT = 4;
-  function isComparing(productId) { return state.compare.indexOf(productId) !== -1; }
+  function isComparing(productId) {
+    return state.compare.indexOf(productId) !== -1;
+  }
   function toggleCompare(productId) {
     var idx = state.compare.indexOf(productId);
     if (idx !== -1) {
@@ -106,23 +139,29 @@
     return { added: true, full: false };
   }
   function removeCompare(productId) {
-    state.compare = state.compare.filter(function (id) { return id !== productId; });
+    state.compare = state.compare.filter(function (id) {
+      return id !== productId;
+    });
     save(STORAGE_KEYS.compare, state.compare);
     renderCompareTray();
   }
 
   /* ---------- Badges ---------- */
   function refreshBadges() {
-    document.querySelectorAll("#cartCount, .nav-cart-count").forEach(function (el) {
-      var n = cartCount();
-      el.textContent = n;
-      el.classList.toggle("is-visible", n > 0);
-    });
-    document.querySelectorAll("#wishlistCount, .nav-wishlist-count").forEach(function (el) {
-      var n = state.wishlist.length;
-      el.textContent = n;
-      el.classList.toggle("is-visible", n > 0);
-    });
+    document
+      .querySelectorAll("#cartCount, .nav-cart-count")
+      .forEach(function (el) {
+        var n = cartCount();
+        el.textContent = n;
+        el.classList.toggle("is-visible", n > 0);
+      });
+    document
+      .querySelectorAll("#wishlistCount, .nav-wishlist-count")
+      .forEach(function (el) {
+        var n = state.wishlist.length;
+        el.textContent = n;
+        el.classList.toggle("is-visible", n > 0);
+      });
   }
 
   /* ---------- Toasts ---------- */
@@ -141,15 +180,29 @@
     var el = document.createElement("div");
     el.className = "toast" + (opts.type ? " toast-" + opts.type : "");
     el.innerHTML =
-      '<i class="bx ' + (opts.icon || "bx-check-circle") + '"></i>' +
-      '<span>' + msg + "</span>" +
-      (opts.actionLabel ? '<a href="' + opts.actionHref + '" class="toast-action">' + opts.actionLabel + "</a>" : "") +
+      '<i class="bx ' +
+      (opts.icon || "bx-check-circle") +
+      '"></i>' +
+      "<span>" +
+      msg +
+      "</span>" +
+      (opts.actionLabel
+        ? '<a href="' +
+          opts.actionHref +
+          '" class="toast-action">' +
+          opts.actionLabel +
+          "</a>"
+        : "") +
       '<button class="toast-close" aria-label="Dismiss"><i class="bx bx-x"></i></button>';
     host.appendChild(el);
-    requestAnimationFrame(function () { el.classList.add("is-visible"); });
+    requestAnimationFrame(function () {
+      el.classList.add("is-visible");
+    });
     var remove = function () {
       el.classList.remove("is-visible");
-      setTimeout(function () { el.remove(); }, 350);
+      setTimeout(function () {
+        el.remove();
+      }, 350);
     };
     el.querySelector(".toast-close").addEventListener("click", remove);
     setTimeout(remove, 4200);
@@ -168,8 +221,12 @@
         item.classList.toggle("is-open", open);
         trigger.setAttribute("aria-expanded", open ? "true" : "false");
       };
-      item.addEventListener("mouseenter", function () { setOpen(true); });
-      item.addEventListener("mouseleave", function () { setOpen(false); });
+      item.addEventListener("mouseenter", function () {
+        setOpen(true);
+      });
+      item.addEventListener("mouseleave", function () {
+        setOpen(false);
+      });
       trigger.addEventListener("click", function (e) {
         if (window.innerWidth <= 860) return;
         e.preventDefault();
@@ -191,7 +248,9 @@
     var open = function () {
       overlay.classList.add("is-open");
       document.body.style.overflow = "hidden";
-      setTimeout(function () { input && input.focus(); }, 150);
+      setTimeout(function () {
+        input && input.focus();
+      }, 150);
     };
     var close = function () {
       overlay.classList.remove("is-open");
@@ -199,13 +258,16 @@
     };
     toggle.addEventListener("click", open);
     closeBtn && closeBtn.addEventListener("click", close);
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") close();
+    });
     var form = overlay.querySelector("form");
     if (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         var q = input.value.trim();
-        window.location.href = "search.html" + (q ? "?q=" + encodeURIComponent(q) : "");
+        window.location.href =
+          "search.html" + (q ? "?q=" + encodeURIComponent(q) : "");
       });
     }
   }
@@ -228,22 +290,43 @@
     if (footer) footer.style.display = "";
     body.innerHTML = state.cart
       .map(function (l) {
-        var p = window.ARKO.getMotorcycle(l.productId) || window.ARKO.getAccessory(l.productId);
+        var p =
+          window.ARKO.getMotorcycle(l.productId) ||
+          window.ARKO.getAccessory(l.productId);
         if (!p) return "";
-        var unit = p.price + (l.variant && l.variant.batteryDelta ? l.variant.batteryDelta : 0);
+        var unit =
+          p.price +
+          (l.variant && l.variant.batteryDelta ? l.variant.batteryDelta : 0);
         return (
-          '<div class="drawer-line" data-key="' + l.key + '">' +
-          '<div class="drawer-line-media"><img data-q="' + p.image + ',200,200" alt="' + p.name + '"></div>' +
+          '<div class="drawer-line" data-key="' +
+          l.key +
+          '">' +
+          '<div class="drawer-line-media"><img data-q="' +
+          p.image +
+          ',200,200" alt="' +
+          p.name +
+          '"></div>' +
           '<div class="drawer-line-info">' +
-          "<p class=\"drawer-line-name\">" + p.name + "</p>" +
-          (l.variant && l.variant.color ? '<p class="drawer-line-variant">' + l.variant.color + (l.variant.batteryLabel ? " · " + l.variant.batteryLabel : "") + "</p>" : "") +
+          '<p class="drawer-line-name">' +
+          p.name +
+          "</p>" +
+          (l.variant && l.variant.color
+            ? '<p class="drawer-line-variant">' +
+              l.variant.color +
+              (l.variant.batteryLabel ? " · " + l.variant.batteryLabel : "") +
+              "</p>"
+            : "") +
           '<div class="qty-stepper qty-stepper-sm">' +
           '<button class="qty-dec" aria-label="Decrease quantity"><i class="bx bx-minus"></i></button>' +
-          '<span>' + l.qty + "</span>" +
+          "<span>" +
+          l.qty +
+          "</span>" +
           '<button class="qty-inc" aria-label="Increase quantity"><i class="bx bx-plus"></i></button>' +
           "</div>" +
           "</div>" +
-          '<div class="drawer-line-price mono-num">' + window.ARKO.formatPrice(unit * l.qty) + "</div>" +
+          '<div class="drawer-line-price mono-num">' +
+          window.ARKO.formatPrice(unit * l.qty) +
+          "</div>" +
           '<button class="drawer-line-remove" aria-label="Remove item"><i class="bx bx-trash"></i></button>' +
           "</div>"
         );
@@ -254,12 +337,24 @@
 
     body.querySelectorAll(".drawer-line").forEach(function (lineEl) {
       var key = lineEl.getAttribute("data-key");
-      var line = state.cart.find(function (l) { return l.key === key; });
-      lineEl.querySelector(".qty-inc").addEventListener("click", function () { setCartQty(key, line.qty + 1); });
-      lineEl.querySelector(".qty-dec").addEventListener("click", function () {
-        if (line.qty <= 1) { removeFromCart(key); } else { setCartQty(key, line.qty - 1); }
+      var line = state.cart.find(function (l) {
+        return l.key === key;
       });
-      lineEl.querySelector(".drawer-line-remove").addEventListener("click", function () { removeFromCart(key); });
+      lineEl.querySelector(".qty-inc").addEventListener("click", function () {
+        setCartQty(key, line.qty + 1);
+      });
+      lineEl.querySelector(".qty-dec").addEventListener("click", function () {
+        if (line.qty <= 1) {
+          removeFromCart(key);
+        } else {
+          setCartQty(key, line.qty - 1);
+        }
+      });
+      lineEl
+        .querySelector(".drawer-line-remove")
+        .addEventListener("click", function () {
+          removeFromCart(key);
+        });
     });
   }
 
@@ -283,7 +378,9 @@
     var closeBtn = drawer.querySelector(".drawer-close");
     closeBtn && closeBtn.addEventListener("click", close);
     scrim && scrim.addEventListener("click", close);
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") close();
+    });
     window.ARKO.openCartDrawer = open;
   }
 
@@ -302,9 +399,17 @@
         var p = window.ARKO.getMotorcycle(id);
         if (!p) return "";
         return (
-          '<div class="compare-tray-thumb" data-id="' + id + '">' +
-          '<img data-q="' + p.image + ',160,160" alt="' + p.name + '">' +
-          '<button aria-label="Remove ' + p.name + ' from compare"><i class="bx bx-x"></i></button>' +
+          '<div class="compare-tray-thumb" data-id="' +
+          id +
+          '">' +
+          '<img data-q="' +
+          p.image +
+          ',160,160" alt="' +
+          p.name +
+          '">' +
+          '<button aria-label="Remove ' +
+          p.name +
+          ' from compare"><i class="bx bx-x"></i></button>' +
           "</div>"
         );
       })
@@ -316,7 +421,8 @@
       });
     });
     var countEl = tray.querySelector(".compare-tray-count");
-    if (countEl) countEl.textContent = state.compare.length + " / " + COMPARE_LIMIT;
+    if (countEl)
+      countEl.textContent = state.compare.length + " / " + COMPARE_LIMIT;
     var link = tray.querySelector(".compare-tray-cta");
     if (link) link.href = "compare.html?ids=" + state.compare.join(",");
   }
@@ -325,16 +431,200 @@
     var tray = document.getElementById("compareTray");
     if (!tray) return;
     var clear = tray.querySelector(".compare-tray-clear");
-    clear && clear.addEventListener("click", function () {
-      state.compare = [];
-      save(STORAGE_KEYS.compare, state.compare);
-      renderCompareTray();
-    });
+    clear &&
+      clear.addEventListener("click", function () {
+        state.compare = [];
+        save(STORAGE_KEYS.compare, state.compare);
+        renderCompareTray();
+      });
     renderCompareTray();
+  }
+
+  /* ---------- Shared product card (motorcycles) ----------
+     Reused by shop.html now; intended for accessories.html,
+     wishlist.html, search.html and product.html "related" rails
+     later — keep this the single source of truth for card markup. */
+  function starsHTML(rating) {
+    var full = Math.floor(rating);
+    var half = rating - full >= 0.5;
+    var out = "";
+    for (var i = 0; i < 5; i++) {
+      if (i < full) out += '<i class="bx bxs-star"></i>';
+      else if (i === full && half) out += '<i class="bx bxs-star-half"></i>';
+      else out += '<i class="bx bx-star"></i>';
+    }
+    return out;
+  }
+  function motoBadgesHTML(m) {
+    var out = "";
+    if (m.isNew) out += '<span class="badge badge-new">New</span>';
+    if (m.compareAtPrice) out += '<span class="badge badge-sale">Sale</span>';
+    if (m.availability === "pre-order")
+      out += '<span class="badge badge-preorder">Pre-order</span>';
+    if (m.availability === "out-of-stock")
+      out += '<span class="badge badge-outofstock">Out of stock</span>';
+    return out;
+  }
+  function motoCardHTML(m) {
+    var oos = m.availability === "out-of-stock";
+    var wl = isWishlisted(m.id);
+    var cmp = isComparing(m.id);
+    var priceHTML =
+      (m.compareAtPrice
+        ? '<span class="price-compare">' +
+          window.ARKO.formatPrice(m.compareAtPrice) +
+          "</span>"
+        : "") + window.ARKO.formatPrice(m.price);
+    var colorsHTML = m.colors
+      .map(function (c) {
+        return (
+          '<span class="color-dot" style="--c:' +
+          c.hex +
+          '" title="' +
+          c.name +
+          '"></span>'
+        );
+      })
+      .join("");
+    return (
+      '<article class="product-card' +
+      (oos ? " card-oos" : "") +
+      '" data-id="' +
+      m.id +
+      '">' +
+      '<div class="card-media">' +
+      '<div class="card-badges">' +
+      motoBadgesHTML(m) +
+      "</div>" +
+      '<div class="card-actions">' +
+      '<button class="card-icon-btn card-wishlist' +
+      (wl ? " is-active" : "") +
+      '" data-id="' +
+      m.id +
+      '" aria-label="' +
+      (wl ? "Remove from wishlist" : "Add to wishlist") +
+      '"><i class="bx bx-heart"></i></button>' +
+      '<button class="card-icon-btn card-compare' +
+      (cmp ? " is-active" : "") +
+      '" data-id="' +
+      m.id +
+      '" aria-label="' +
+      (cmp ? "Remove from compare" : "Add to compare") +
+      '"><i class="bx bx-git-compare"></i></button>' +
+      '<button class="card-icon-btn card-quickview" data-id="' +
+      m.id +
+      '" aria-label="Quick view ' +
+      m.name +
+      '"><i class="bx bx-show"></i></button>' +
+      "</div>" +
+      '<a href="product.html?id=' +
+      m.slug +
+      '" aria-label="' +
+      m.name +
+      '"><img data-q="' +
+      m.image +
+      ',600,460" alt="' +
+      m.name +
+      '"></a>' +
+      "</div>" +
+      '<div class="card-body">' +
+      '<p class="eyebrow card-cat">' +
+      m.categoryLabel +
+      "</p>" +
+      '<h3 class="card-name"><a href="product.html?id=' +
+      m.slug +
+      '">' +
+      m.name +
+      "</a></h3>" +
+      '<p class="card-tagline">' +
+      m.tagline +
+      "</p>" +
+      '<div class="rating card-rating"><span class="stars">' +
+      starsHTML(m.rating) +
+      '</span><span class="rating-num">' +
+      m.rating.toFixed(1) +
+      '</span><span class="rating-count">(' +
+      m.reviewCount +
+      ")</span></div>" +
+      '<div class="card-specs"><span><i class="bx bx-tachometer"></i>' +
+      m.specs.power +
+      ' kW</span><span><i class="bx bx-battery-charging"></i>' +
+      m.specs.range +
+      ' km</span><span><i class="bx bx-time-five"></i>' +
+      m.specs.chargeTime +
+      "h</span></div>" +
+      '<div class="card-colors">' +
+      colorsHTML +
+      "</div>" +
+      '<div class="card-footer">' +
+      '<div class="card-price mono-num' +
+      (m.compareAtPrice ? " is-sale" : "") +
+      '">' +
+      priceHTML +
+      "</div>" +
+      '<a href="product.html?id=' +
+      m.slug +
+      '" class="btn-line">Explore <i class="bx bx-right-arrow-alt"></i></a>' +
+      "</div>" +
+      "</div>" +
+      "</article>"
+    );
+  }
+
+  /* Global delegated handling for wishlist/compare toggles on any
+     product card, on any page — cards are injected at runtime so
+     listeners must be delegated at the document level. */
+  function initProductCardActions() {
+    document.addEventListener("click", function (e) {
+      var wBtn = e.target.closest(".card-wishlist");
+      if (wBtn) {
+        var id = wBtn.getAttribute("data-id");
+        var added = toggleWishlist(id);
+        wBtn.classList.toggle("is-active", added);
+        wBtn.setAttribute(
+          "aria-label",
+          added ? "Remove from wishlist" : "Add to wishlist",
+        );
+        var p = window.ARKO.getMotorcycle(id) || window.ARKO.getAccessory(id);
+        toast(
+          (p ? p.name : "Item") +
+            (added ? " added to wishlist" : " removed from wishlist"),
+          { icon: "bx-heart" },
+        );
+        return;
+      }
+      var cBtn = e.target.closest(".card-compare");
+      if (cBtn) {
+        var id2 = cBtn.getAttribute("data-id");
+        var res = toggleCompare(id2);
+        if (res.full) {
+          toast("Compare is full — remove one to add another", {
+            type: "danger",
+            icon: "bx-error",
+          });
+          return;
+        }
+        cBtn.classList.toggle("is-active", res.added);
+        cBtn.setAttribute(
+          "aria-label",
+          res.added ? "Remove from compare" : "Add to compare",
+        );
+        var p2 = window.ARKO.getMotorcycle(id2);
+        toast(
+          (p2 ? p2.name : "Item") +
+            (res.added ? " added to compare" : " removed from compare"),
+          { icon: "bx-git-compare" },
+        );
+        return;
+      }
+    });
   }
 
   /* ---------- Public API ---------- */
   window.ARKO = window.ARKO || {};
+  window.ARKO.starsHTML = starsHTML;
+  window.ARKO.motoBadgesHTML = motoBadgesHTML;
+  window.ARKO.motoCardHTML = motoCardHTML;
   window.ARKO.cartState = state;
   window.ARKO.addToCart = addToCart;
   window.ARKO.removeFromCart = removeFromCart;
@@ -345,7 +635,9 @@
   window.ARKO.toggleWishlist = toggleWishlist;
   window.ARKO.isComparing = isComparing;
   window.ARKO.toggleCompare = toggleCompare;
-  window.ARKO.compareIds = function () { return state.compare.slice(); };
+  window.ARKO.compareIds = function () {
+    return state.compare.slice();
+  };
   window.ARKO.toast = toast;
   window.ARKO.renderCartDrawer = renderCartDrawer;
   window.ARKO.renderCompareTray = renderCompareTray;
