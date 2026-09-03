@@ -16,6 +16,12 @@
   --line-light: rgba(11, 11, 11, 0.12);
   --ease: cubic-bezier(0.16, 0.84, 0.44, 1);
   --container: 1360px;
+  /* Commerce semantic tokens (DESIGN-SYSTEM.md §2) */
+  --success: #2e7d32;
+  --danger: #c0392b;
+  --star: #f2e900;
+  --card-bg: #ffffff;
+  --shadow-card: 0 1px 0 rgba(11, 11, 11, 0.06);
 }
 *,
 *::before,

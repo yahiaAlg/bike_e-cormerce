@@ -114,6 +114,15 @@
   if (heroImg) {
     heroImg.loading = "eager";
   }
+
+  /* Exposed so pages that inject markup at runtime (product cards,
+     quick view, cart drawer, compare tray, etc.) can resolve any new
+     img[data-q] elements without duplicating the resolver logic. */
+  window.ARKOImages = {
+    resolveAll: function (root) {
+      (root || document).querySelectorAll("img[data-q]").forEach(resolve);
+    },
+  };
 })();
 
 /* ---------- MAIN (js/main.js) — nav, reveal, counters, battery scrub ---------- */
