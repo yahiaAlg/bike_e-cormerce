@@ -1306,7 +1306,49 @@
 }
 
 /* ===========================================================
-   14 — RESPONSIVE
+   14 — PAGINATION
+=========================================================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 56px;
+}
+.pagination button {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 6px;
+  border: 1px solid var(--line-light);
+  background: none;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+.pagination button:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+.pagination button.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--white);
+}
+.pagination button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.pagination-ellipsis {
+  color: var(--graphite);
+  padding: 0 4px;
+}
+
+/* ===========================================================
+   15 — RESPONSIVE
 =========================================================== */
 @media (max-width: 1024px) {
   .mega-menu-inner {

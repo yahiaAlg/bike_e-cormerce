@@ -620,6 +620,239 @@
     });
   }
 
+  /* ---------- Quick view modal ----------
+     Shared across every page that renders motorcycle cards (shop,
+     wishlist, search, product "related" rails...). Markup for
+     #qvScrim / #qvModal / #qvBody lives once per page in the shared
+     drawers block — this module only ever fills/opens/closes it. */
+  var qvSelection = { id: null, battery: null, color: null, qty: 1 };
+  function qvPrice(m) {
+    var battery = m.battery.find(function (b) {
+      return b.id === qvSelection.battery;
+    });
+    return m.price + (battery ? battery.priceDelta : 0);
+  }
+  function renderQuickViewBody(m) {
+    qvSelection.id = m.id;
+    qvSelection.battery = m.battery[0].id;
+    qvSelection.color = m.colors[0].name;
+    qvSelection.qty = 1;
+    var body = document.getElementById("qvBody");
+    if (!body) return;
+    body.innerHTML =
+      '<div class="qv-media"><img data-q="' +
+      m.image +
+      ',700,600" alt="' +
+      m.name +
+      '"></div>' +
+      '<div class="qv-info">' +
+      '<p class="eyebrow card-cat">' +
+      m.categoryLabel +
+      "</p>" +
+      '<h3 class="card-name">' +
+      m.name +
+      "</h3>" +
+      '<div class="rating card-rating"><span class="stars">' +
+      starsHTML(m.rating) +
+      '</span><span class="rating-num">' +
+      m.rating.toFixed(1) +
+      '</span><span class="rating-count">(' +
+      m.reviewCount +
+      ' reviews)</span></div>' +
+      '<p class="body-m" style="margin:14px 0">' +
+      m.tagline +
+      "</p>" +
+      '<p class="qv-variant-title">Colour — <span id="qvColorName">' +
+      m.colors[0].name +
+      '</span></p>' +
+      '<div class="card-colors" id="qvColors">' +
+      m.colors
+        .map(function (c, i) {
+          return (
+            '<span class="color-dot' +
+            (i === 0 ? " is-selected" : "") +
+            '" style="--c:' +
+            c.hex +
+            '" data-name="' +
+            c.name +
+            '" title="' +
+            c.name +
+            '"></span>'
+          );
+        })
+        .join("") +
+      "</div>" +
+      '<p class="qv-variant-title">Battery</p>' +
+      '<div class="qv-battery-options" id="qvBattery">' +
+      m.battery
+        .map(function (b, i) {
+          return (
+            "<label>" +
+            '<span><input type="radio" name="qvBattery" value="' +
+            b.id +
+            '"' +
+            (i === 0 ? " checked" : "") +
+            "> " +
+            b.label +
+            "</span>" +
+            '<span class="mono-num">' +
+            (b.priceDelta ? "+" + window.ARKO.formatPrice(b.priceDelta) : "Included") +
+            "</span>" +
+            "</label>"
+          );
+        })
+        .join("") +
+      "</div>" +
+      '<div class="qv-price-row">' +
+      '<span class="qv-price mono-num" id="qvPrice">' +
+      window.ARKO.formatPrice(qvPrice(m)) +
+      "</span>" +
+      '<div class="qty-stepper" id="qvQty">' +
+      '<button class="qty-dec" aria-label="Decrease quantity"><i class="bx bx-minus"></i></button>' +
+      '<span id="qvQtyVal">1</span>' +
+      '<button class="qty-inc" aria-label="Increase quantity"><i class="bx bx-plus"></i></button>' +
+      "</div>" +
+      "</div>" +
+      '<div class="qv-actions">' +
+      '<button class="btn-volt" id="qvAddToCart">Add to cart</button>' +
+      '<a href="product.html?id=' +
+      m.slug +
+      '" class="btn-ghost" style="color:var(--ink);border-color:var(--line-light)">Full details</a>' +
+      "</div>" +
+      "</div>";
+    if (window.ARKOImages) window.ARKOImages.resolveAll(body);
+
+    body.querySelectorAll("#qvColors .color-dot").forEach(function (dot) {
+      dot.addEventListener("click", function () {
+        body
+          .querySelectorAll("#qvColors .color-dot")
+          .forEach(function (d) {
+            d.classList.remove("is-selected");
+          });
+        dot.classList.add("is-selected");
+        qvSelection.color = dot.getAttribute("data-name");
+        document.getElementById("qvColorName").textContent = qvSelection.color;
+      });
+    });
+    body.querySelectorAll('#qvBattery input[type="radio"]').forEach(function (r) {
+      r.addEventListener("change", function () {
+        qvSelection.battery = r.value;
+        document.getElementById("qvPrice").textContent = window.ARKO.formatPrice(
+          qvPrice(m),
+        );
+      });
+    });
+    var qtyVal = document.getElementById("qvQtyVal");
+    body.querySelector("#qvQty .qty-inc").addEventListener("click", function () {
+      qvSelection.qty += 1;
+      qtyVal.textContent = qvSelection.qty;
+    });
+    body.querySelector("#qvQty .qty-dec").addEventListener("click", function () {
+      qvSelection.qty = Math.max(1, qvSelection.qty - 1);
+      qtyVal.textContent = qvSelection.qty;
+    });
+    document.getElementById("qvAddToCart").addEventListener("click", function () {
+      var battery = m.battery.find(function (b) {
+        return b.id === qvSelection.battery;
+      });
+      addToCart(m.id, {
+        qty: qvSelection.qty,
+        type: "motorcycle",
+        variant: {
+          color: qvSelection.color,
+          batteryLabel: battery ? battery.label : null,
+          batteryDelta: battery ? battery.priceDelta : 0,
+        },
+      });
+      toast(m.name + " added to cart", { icon: "bx-cart-alt" });
+      closeQuickView();
+    });
+  }
+  function openQuickView(id) {
+    var m = window.ARKO.getMotorcycle(id);
+    if (!m) return;
+    renderQuickViewBody(m);
+    var scrim = document.getElementById("qvScrim");
+    var modal = document.getElementById("qvModal");
+    if (!modal) return;
+    scrim && scrim.classList.add("is-open");
+    modal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeQuickView() {
+    var scrim = document.getElementById("qvScrim");
+    var modal = document.getElementById("qvModal");
+    if (!modal) return;
+    scrim && scrim.classList.remove("is-open");
+    modal.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+  function initQuickView() {
+    var modal = document.getElementById("qvModal");
+    if (!modal) return;
+    var scrim = document.getElementById("qvScrim");
+    var closeBtn = modal.querySelector(".modal-close");
+    closeBtn && closeBtn.addEventListener("click", closeQuickView);
+    scrim && scrim.addEventListener("click", closeQuickView);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeQuickView();
+    });
+  }
+
+  /* Global delegated handling for wishlist/compare/quick-view toggles
+     on any product card, on any page — cards are injected at runtime
+     so listeners must be delegated at the document level. */
+  function initProductCardActions() {
+    document.addEventListener("click", function (e) {
+      var wBtn = e.target.closest(".card-wishlist");
+      if (wBtn) {
+        var id = wBtn.getAttribute("data-id");
+        var added = toggleWishlist(id);
+        wBtn.classList.toggle("is-active", added);
+        wBtn.setAttribute(
+          "aria-label",
+          added ? "Remove from wishlist" : "Add to wishlist",
+        );
+        var p = window.ARKO.getMotorcycle(id) || window.ARKO.getAccessory(id);
+        toast(
+          (p ? p.name : "Item") +
+            (added ? " added to wishlist" : " removed from wishlist"),
+          { icon: "bx-heart" },
+        );
+        return;
+      }
+      var cBtn = e.target.closest(".card-compare");
+      if (cBtn) {
+        var id2 = cBtn.getAttribute("data-id");
+        var res = toggleCompare(id2);
+        if (res.full) {
+          toast("Compare is full — remove one to add another", {
+            type: "danger",
+            icon: "bx-error",
+          });
+          return;
+        }
+        cBtn.classList.toggle("is-active", res.added);
+        cBtn.setAttribute(
+          "aria-label",
+          res.added ? "Remove from compare" : "Add to compare",
+        );
+        var p2 = window.ARKO.getMotorcycle(id2);
+        toast(
+          (p2 ? p2.name : "Item") +
+            (res.added ? " added to compare" : " removed from compare"),
+          { icon: "bx-git-compare" },
+        );
+        return;
+      }
+      var qvBtn = e.target.closest(".card-quickview");
+      if (qvBtn) {
+        openQuickView(qvBtn.getAttribute("data-id"));
+        return;
+      }
+    });
+  }
+
   /* ---------- Public API ---------- */
   window.ARKO = window.ARKO || {};
   window.ARKO.starsHTML = starsHTML;
@@ -641,6 +874,8 @@
   window.ARKO.toast = toast;
   window.ARKO.renderCartDrawer = renderCartDrawer;
   window.ARKO.renderCompareTray = renderCompareTray;
+  window.ARKO.openQuickView = openQuickView;
+  window.ARKO.closeQuickView = closeQuickView;
 
   document.addEventListener("DOMContentLoaded", function () {
     refreshBadges();
@@ -648,5 +883,7 @@
     initSearchOverlay();
     initCartDrawer();
     initCompareTray();
+    initQuickView();
+    initProductCardActions();
   });
 })();
