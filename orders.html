@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders — ARKO</title>
+  <meta name="description" content="Your order history and tracking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+</head>
+<body data-active="shop">
+  <div data-header></div>
+
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">Order History</div>
+      <h1 class="section-title">My Orders</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <a href="/account.html">Account</a><span class="sep">/</span>
+        <span>Orders</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div style="display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap">
+        <button class="btn-dark btn-sm order-filter active" data-filter="all">All Orders</button>
+        <button class="btn-outline btn-sm order-filter" data-filter="processing">Processing</button>
+        <button class="btn-outline btn-sm order-filter" data-filter="shipped">Shipped</button>
+        <button class="btn-outline btn-sm order-filter" data-filter="delivered">Delivered</button>
+      </div>
+      <div id="ordersList"></div>
+      <div id="orderDetail" style="display:none"></div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    var currentFilter = 'all';
+
+    document.querySelectorAll('.order-filter').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.order-filter').forEach(function (b) { b.classList.remove('active'); b.classList.remove('btn-dark'); b.classList.add('btn-outline'); });
+        btn.classList.add('active'); btn.classList.add('btn-dark'); btn.classList.remove('btn-outline');
+        currentFilter = btn.dataset.filter;
+        renderOrders();
+      });
+    });
+
+    function renderOrders() {
+      var orders = currentFilter === 'all' ? ARKO_DATA.orders : ARKO_DATA.orders.filter(function (o) { return o.status === currentFilter; });
+      var list = document.getElementById('ordersList');
+      var detail = document.getElementById('orderDetail');
+      detail.style.display = 'none';
+      list.style.display = 'block';
+
+      if (orders.length === 0) {
+        list.innerHTML = '<div class="empty-state"><i class="bx bx-package"></i><h3>No orders found</h3><p>No orders match this filter.</p><a href="/shop.html" class="btn-volt">Browse Motorcycles</a></div>';
+        return;
+      }
+
+      list.innerHTML = orders.map(function (o) {
+        return '<div class="order-card"><div class="order-card-header"><div><h4>' + o.id + '</h4><div class="order-date">Placed on ' + o.date + '</div></div><span class="order-status-badge ' + o.status + '">' + o.status + '</span></div>' +
+          '<div class="order-items-list">' + o.items.map(function (it) {
+            var p = getProductById(it.name.toLowerCase().replace(/arko /, '').replace(/\s+/g, '-'));
+            var img = p ? ARKO_IMG.search(p.image) : '';
+            return '<div class="order-item-mini">' + (img ? '<img src="' + img + '" alt="">' : '<div style="width:50px;height:50px;background:var(--bone-2)"></div>') + '<span>' + it.name + ' ×' + it.qty + '</span></div>';
+          }).join('') + '</div>' +
+          '<div class="order-card-footer"><div style="display:flex;gap:10px"><button class="btn-outline btn-sm" onclick="showOrderDetail(\'' + o.id + '\')"><i class="bx bx-detail"></i>Details</button>' + (o.status === 'shipped' || o.status === 'processing' ? '<button class="btn-volt btn-sm" onclick="showTracking(\'' + o.id + '\')"><i class="bx bx-truck"></i>Track</button>' : '') + (o.status === 'delivered' ? '<button class="btn-outline btn-sm" onclick="arkoToast(\'Reorder is a demo feature\')"><i class="bx bx-refresh"></i>Reorder</button>' : '') + '</div><div class="total">' + formatPrice(o.total) + '</div></div></div>';
+      }).join('');
+    }
+
+    function showOrderDetail(orderId) {
+      var order = ARKO_DATA.orders.find(function (o) { return o.id === orderId; });
+      if (!order) return;
+      document.getElementById('ordersList').style.display = 'none';
+      var detail = document.getElementById('orderDetail');
+      detail.style.display = 'block';
+
+      detail.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">' +
+        '<div><h2 style="font-size:1.6rem;font-weight:800">' + order.id + '</h2><div style="color:#999;font-size:.85rem">Placed on ' + order.date + '</div></div>' +
+        '<div style="display:flex;gap:10px"><button class="btn-outline" onclick="renderOrders()"><i class="bx bx-left-arrow-alt"></i>Back to Orders</button>' + (order.status === 'delivered' ? '<button class="btn-volt" onclick="arkoToast(\'Reorder is a demo feature\')"><i class="bx bx-refresh"></i>Reorder</button>' : '') + '</div></div>' +
+        '<div style="background:var(--white);border:1px solid var(--line-light);padding:30px;margin-bottom:20px">' +
+          '<h3 style="font-size:1.1rem;font-weight:800;margin-bottom:16px">Order Items</h3>' +
+          order.items.map(function (it) {
+            var p = getProductById(it.name.toLowerCase().replace(/arko /, '').replace(/\s+/g, '-'));
+            var img = p ? ARKO_IMG.search(p.image) : '';
+            return '<div class="order-review-item">' + (img ? '<img src="' + img + '" alt="">' : '<div style="width:60px;height:60px;background:var(--bone-2)"></div>') + '<div><h6>' + it.name + '</h6><div class="qty">Qty: ' + it.qty + '</div><div style="font-weight:700">' + formatPrice(it.price) + '</div></div></div>';
+          }).join('') +
+          '<div style="border-top:2px solid var(--ink);margin-top:16px;padding-top:16px;display:flex;justify-content:space-between;font-size:1.5rem;font-weight:800"><span>Total</span><span>' + formatPrice(order.total) + '</span></div>' +
+        '</div>' +
+        '<div class="checkout-panel" style="background:var(--white);border:1px solid var(--line-light);padding:30px">' +
+          '<h3 style="font-size:1.1rem;font-weight:800;margin-bottom:16px">Delivery Address</h3>' +
+          '<p style="color:#555;line-height:1.6">John Doe<br>Torstraße 112<br>10119 Berlin, Germany<br>+49 30 1234567</p>' +
+        '</div>';
+    }
+
+    function showTracking(orderId) {
+      var order = ARKO_DATA.orders.find(function (o) { return o.id === orderId; });
+      if (!order || !order.tracking) return;
+      document.getElementById('ordersList').style.display = 'none';
+      var detail = document.getElementById('orderDetail');
+      detail.style.display = 'block';
+
+      detail.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">' +
+        '<div><h2 style="font-size:1.6rem;font-weight:800">Tracking: ' + order.id + '</h2><div style="color:#999;font-size:.85rem">Carrier: ' + order.tracking.carrier + ' • ' + order.tracking.number + '</div></div>' +
+        '<button class="btn-outline" onclick="renderOrders()"><i class="bx bx-left-arrow-alt"></i>Back to Orders</button></div>' +
+        '<div class="checkout-panel" style="background:var(--white);border:1px solid var(--line-light);padding:30px">' +
+          '<h3 style="font-size:1.1rem;font-weight:800;margin-bottom:24px">Delivery Status</h3>' +
+          '<div class="tracking-timeline">' +
+            order.tracking.stages.map(function (stage) {
+              var cls = stage.done ? 'done' : (order.tracking.stages.filter(function (s) { return s.done; }).length === order.tracking.stages.indexOf(stage) ? 'current' : '');
+              var icon = stage.done ? 'bx-check' : (cls === 'current' ? 'bx-time' : 'bx-circle');
+              return '<div class="tracking-stage ' + cls + '"><div class="stage-dot"><i class="bx ' + icon + '"></i></div><div><h6>' + stage.name + '</h6><div class="stage-date">' + stage.date + '</div></div></div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+        '<div style="background:var(--white);border:1px solid var(--line-light);padding:24px;margin-top:20px">' +
+          '<h4 style="font-weight:800;margin-bottom:12px">Order Items</h4>' +
+          order.items.map(function (it) {
+            var p = getProductById(it.name.toLowerCase().replace(/arko /, '').replace(/\s+/g, '-'));
+            var img = p ? ARKO_IMG.search(p.image) : '';
+            return '<div class="order-review-item">' + (img ? '<img src="' + img + '" alt="">' : '<div style="width:60px;height:60px;background:var(--bone-2)"></div>') + '<div><h6>' + it.name + '</h6><div class="qty">Qty: ' + it.qty + '</div></div></div>';
+          }).join('') +
+        '</div>';
+    }
+
+    renderOrders();
+  </script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Service — ARKO</title>
+  <meta name="description" content="Schedule a service appointment for your ARKO motorcycle at a dealer near you." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+  <style>
+    .svc-layout { display: grid; grid-template-columns: 1fr 400px; gap: 40px; align-items: flex-start; }
+    .svc-form { background: var(--white); border: 1px solid var(--line-light); padding: 36px; }
+    .svc-info { position: sticky; top: 90px; }
+    .svc-info-card { background: var(--ink); color: var(--white); padding: 30px; margin-bottom: 20px; }
+    .svc-info-card h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 14px; }
+    .svc-info-card .info-item { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; font-size: .9rem; color: #c8c8c8; }
+    .svc-info-card .info-item i { font-size: 1.2rem; color: var(--volt); flex-shrink: 0; }
+    .svc-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    .svc-type { border: 2px solid var(--line-light); padding: 20px; cursor: pointer; transition: all .3s ease; text-align: center; }
+    .svc-type:hover { border-color: var(--ink); }
+    .svc-type.active { border-color: var(--volt); background: #fffbe8; }
+    .svc-type i { font-size: 2rem; color: var(--volt-dim); margin-bottom: 8px; display: block; }
+    .svc-type h6 { font-weight: 700; font-size: .88rem; margin-bottom: 2px; }
+    .svc-type p { font-size: .76rem; color: #777; }
+    .svc-type .price { font-size: .85rem; font-weight: 800; margin-top: 6px; }
+    @media (max-width: 860px) { .svc-layout { grid-template-columns: 1fr; } .svc-info { position: static; } .svc-types { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-active="dealers">
+  <div data-header></div>
+
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">Service & Maintenance</div>
+      <h1 class="section-title">Book a Service</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <span>Service</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div class="svc-layout">
+        <div class="svc-form">
+          <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:6px">Schedule Your Service</h3>
+          <p style="color:#777;font-size:.88rem;margin-bottom:24px">Electric drivetrains need minimal maintenance, but regular check-ups keep your ARKO performing at its best.</p>
+
+          <h6 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Service Type</h6>
+          <div class="svc-types">
+            <div class="svc-type active" data-svc="routine" onclick="selectSvcType(this)">
+              <i class="bx bx-wrench"></i>
+              <h6>Routine Check</h6>
+              <p>Brakes, tyres, software</p>
+              <div class="price">€89</div>
+            </div>
+            <div class="svc-type" data-svc="battery" onclick="selectSvcType(this)">
+              <i class="bx bx-battery-charging"></i>
+              <h6>Battery Service</h6>
+              <p>Health check & balance</p>
+              <div class="price">€129</div>
+            </div>
+            <div class="svc-type" data-svc="major" onclick="selectSvcType(this)">
+              <i class="bx bx-buildings"></i>
+              <h6>Major Service</h6>
+              <p>Full inspection & tune</p>
+              <div class="price">€249</div>
+            </div>
+          </div>
+
+          <form onsubmit="submitService(event)">
+            <div class="form-group">
+              <label class="form-label">Your Motorcycle</label>
+              <select class="form-select" id="svcBike" required>
+                <option value="">Select your bike...</option>
+                <option value="rvx">ARKO RVX</option>
+                <option value="rvx-pro">ARKO RVX Pro</option>
+                <option value="trail-s">ARKO Trail S</option>
+                <option value="trail-l">ARKO Trail L</option>
+                <option value="trail-xr">ARKO Trail XR</option>
+                <option value="adventure-x">ARKO Adventure X</option>
+                <option value="adventure-l">ARKO Adventure L</option>
+                <option value="urban-e">ARKO Urban E</option>
+                <option value="enduro-r">ARKO Enduro R</option>
+                <option value="enduro-sport">ARKO Enduro Sport</option>
+                <option value="performance-rs">ARKO Performance RS</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred Dealer</label>
+              <select class="form-select" id="svcDealer" required>
+                <option value="">Select dealer...</option>
+                <option value="d1">ARKO Berlin Mitte</option>
+                <option value="d2">ARKO Munich</option>
+                <option value="d3">ARKO Amsterdam</option>
+                <option value="d4">ARKO Milan</option>
+                <option value="d5">ARKO Lyon</option>
+                <option value="d6">ARKO Barcelona</option>
+                <option value="d7">ARKO Stockholm</option>
+                <option value="d8">ARKO Lisbon</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-control" id="svcDate" required></div>
+              <div class="form-group"><label class="form-label">Time</label>
+                <select class="form-select" id="svcTime" required>
+                  <option value="">Select time...</option>
+                  <option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option>
+                  <option>11:00 AM</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-control" placeholder="John" required></div>
+              <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-control" placeholder="Doe" required></div>
+            </div>
+            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" placeholder="john@email.com" required></div>
+            <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-control" placeholder="+49 30 1234567" required></div>
+            <div class="form-group"><label class="form-label">Notes (optional)</label><textarea class="form-control" placeholder="Describe any issues or concerns..." style="min-height:80px"></textarea></div>
+            <button type="submit" class="btn-volt btn-lg btn-block"><i class="bx bx-calendar-check"></i>Book Service</button>
+          </form>
+        </div>
+
+        <div class="svc-info">
+          <div class="svc-info-card">
+            <h3>What's Included</h3>
+            <div class="info-item"><i class="bx bx-check"></i>Software update to latest firmware</div>
+            <div class="info-item"><i class="bx bx-check"></i>Brake pad and disc inspection</div>
+            <div class="info-item"><i class="bx bx-check"></i>Tyre pressure and tread check</div>
+            <div class="info-item"><i class="bx bx-check"></i>Suspension setup and adjustment</div>
+            <div class="info-item"><i class="bx bx-check"></i>Battery health report</div>
+            <div class="info-item"><i class="bx bx-check"></i>Full diagnostic scan</div>
+          </div>
+          <div class="svc-info-card">
+            <h3>Service Intervals</h3>
+            <div class="info-item"><i class="bx bx-time"></i>First service: 1,000 km or 3 months</div>
+            <div class="info-item"><i class="bx bx-time"></i>Routine: every 5,000 km or 6 months</div>
+            <div class="info-item"><i class="bx bx-time"></i>Major: every 15,000 km or 12 months</div>
+            <div class="info-item"><i class="bx bx-time"></i>Battery: annually recommended</div>
+          </div>
+          <div class="svc-info-card">
+            <h3>Questions?</h3>
+            <div class="info-item"><i class="bx bx-phone"></i>+49 30 555 0101</div>
+            <div class="info-item"><i class="bx bx-envelope"></i>service@arko.eu</div>
+            <a href="/support.html" class="btn-ghost btn-sm" style="margin-top:14px">Help Center</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    var tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('svcDate').min = tomorrow.toISOString().split('T')[0];
+
+    function selectSvcType(el) {
+      document.querySelectorAll('.svc-type').forEach(function (t) { t.classList.remove('active'); });
+      el.classList.add('active');
+    }
+
+    function submitService(e) {
+      e.preventDefault();
+      arkoToast('Service booked! Confirmation sent to your email.', 'success');
+      setTimeout(function () {
+        document.querySelector('.svc-form').innerHTML = '<div style="text-align:center;padding:40px 20px"><div class="success-icon"><i class="bx bx-check"></i></div><h2 style="font-size:1.6rem;font-weight:800;margin-bottom:12px">Service Booked!</h2><p style="color:#555;max-width:400px;margin:0 auto 24px">Your service appointment has been scheduled. We\'ve sent a confirmation email with all the details.</p><a href="/account.html" class="btn-volt">Go to Account</a></div>';
+      }, 500);
+    }
+  </script>
+</body>
+</html>

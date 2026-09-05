@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessory Details — ARKO</title>
+  <meta name="description" content="ARKO accessory product details, specs, and purchase." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+</head>
+<body data-active="accessories">
+  <div data-header></div>
+
+  <section class="page-header" style="padding:100px 0 30px">
+    <div class="container-x">
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <a href="/accessories.html">Accessories</a><span class="sep">/</span>
+        <span id="accCrumb">Product</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight" style="padding-top:0">
+    <div class="container-x">
+      <div class="product-detail" id="accDetail"></div>
+    </div>
+  </section>
+
+  <section class="section tight" style="padding-top:0">
+    <div class="container-x">
+      <div class="product-tabs">
+        <div class="product-tab active" data-tab="specs">Specifications</div>
+        <div class="product-tab" data-tab="features">Features</div>
+        <div class="product-tab" data-tab="reviews">Reviews</div>
+      </div>
+      <div class="product-tab-content active" id="tab-specs"></div>
+      <div class="product-tab-content" id="tab-features"></div>
+      <div class="product-tab-content" id="tab-reviews"></div>
+    </div>
+  </section>
+
+  <section class="related-section section on-dark">
+    <div class="container-x">
+      <div class="section-head">
+        <div><div class="eyebrow" data-reveal>Complete Your Setup</div><h2 class="section-title" data-reveal>You May Also Need</h2></div>
+      </div>
+      <div class="product-grid" id="accRelated"></div>
+    </div>
+  </section>
+
+  <div class="sticky-purchase" id="stickyPurchase">
+    <div class="container-x">
+      <div class="sticky-purchase-inner">
+        <div><div class="sp-name" id="spName">ARKO</div><div style="font-size:.82rem;color:#999">In Stock</div></div>
+        <div class="sp-price" id="spPrice">€0</div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-volt" id="spAddCart"><i class='bx bx-cart'></i>Add to Cart</button>
+          <button class="btn-ghost" id="spBuyNow">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    var params = new URLSearchParams(location.search);
+    var id = params.get('id') || 'fast-charger';
+    var p = getAccessoryById(id) || ARKO_DATA.accessories[0];
+    ARKO_STORE.addRecent(p.id);
+    var selectedColor = 0;
+    var selectedSize = 0;
+    var qty = 1;
+
+    document.getElementById('accCrumb').textContent = p.name;
+    document.title = p.name + ' — ARKO';
+
+    var galleryImgs = (p.gallery || [p.image]).map(function (g) { return ARKO_IMG.search(g); });
+    var colorHTML = (p.colors || []).map(function (c, i) {
+      return '<span class="color-swatch ' + (i === 0 ? 'active' : '') + '" style="background:' + c.hex + '" data-idx="' + i + '" title="' + c.name + '"></span>';
+    }).join('');
+    var sizeHTML = (p.sizes || []).map(function (s, i) {
+      return '<span class="variant-option ' + (i === 0 ? 'active' : '') + '" data-idx="' + i + '">' + s + '</span>';
+    }).join('');
+
+    document.getElementById('accDetail').innerHTML = `
+      <div>
+        <div class="product-gallery-main"><img src="${galleryImgs[0]}" alt="${p.name}" id="mainImg" /></div>
+        <div class="product-gallery-thumbs">
+          ${galleryImgs.map(function (g, i) { return '<img src="' + g + '" data-idx="' + i + '" class="' + (i === 0 ? 'active' : '') + '" />'; }).join('')}
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="eyebrow">${p.category}</div>
+        <h1>${p.name}</h1>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          ${starRating(p.rating, '1rem')}
+          <span style="font-size:.85rem;color:#999">${p.rating} (${p.reviewCount} reviews)</span>
+        </div>
+        <p style="color:#555;line-height:1.6;margin-bottom:20px">${p.description}</p>
+        <div class="price">${formatPrice(p.price)}</div>
+        ${colorHTML ? '<div class="variant-group"><h6>Color: <span id="colorName">' + p.colors[0].name + '</span></h6><div class="color-swatches">' + colorHTML + '</div></div>' : ''}
+        ${sizeHTML ? '<div class="variant-group"><h6>Size</h6><div class="variant-options">' + sizeHTML + '</div></div>' : ''}
+        <div class="variant-group"><h6>Quantity</h6>
+          <div class="qty-selector">
+            <button onclick="changeQty(-1)">-</button>
+            <input type="number" id="qtyInput" value="1" min="1" readonly>
+            <button onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+        <div class="product-actions">
+          <button class="btn-volt btn-lg" onclick="addToCartFromAcc()"><i class='bx bx-cart'></i>Add to Cart</button>
+          <button class="btn-dark btn-lg" onclick="buyNowFromAcc()"><i class='bx bx-rocket'></i>Buy Now</button>
+          <button class="btn-outline btn-lg" onclick="toggleWishFromAcc(this)"><i class='bx bx-heart'></i>Save</button>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll('.product-gallery-thumbs img').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('.product-gallery-thumbs img').forEach(function (x) { x.classList.remove('active'); });
+        t.classList.add('active');
+        document.getElementById('mainImg').src = t.src;
+      });
+    });
+    document.querySelectorAll('.color-swatch').forEach(function (s) {
+      s.addEventListener('click', function () {
+        document.querySelectorAll('.color-swatch').forEach(function (x) { x.classList.remove('active'); });
+        s.classList.add('active');
+        selectedColor = parseInt(s.dataset.idx);
+        document.getElementById('colorName').textContent = p.colors[selectedColor].name;
+      });
+    });
+    document.querySelectorAll('.variant-option').forEach(function (o) {
+      o.addEventListener('click', function () {
+        document.querySelectorAll('.variant-option').forEach(function (x) { x.classList.remove('active'); });
+        o.classList.add('active');
+        selectedSize = parseInt(o.dataset.idx);
+      });
+    });
+    document.querySelectorAll('.product-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('.product-tab').forEach(function (x) { x.classList.remove('active'); });
+        document.querySelectorAll('.product-tab-content').forEach(function (x) { x.classList.remove('active'); });
+        t.classList.add('active');
+        document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+      });
+    });
+
+    var specs = p.specs;
+    var specRows = Object.keys(specs).map(function (k) {
+      var labels = { power: 'Power', compatibility: 'Compatibility', weight: 'Weight', cable: 'Cable Length', material: 'Material', mounting: 'Mounting', capacity: 'Capacity', cells: 'Cells', warranty: 'Warranty', includes: 'Includes', tyre: 'Tyre Type', finish: 'Finish', uv: 'UV Protection', foam: 'Foam', lens: 'Lens', ports: 'Ports', protection: 'Protection', waterproof: 'Waterproof', sizes: 'Available Sizes', certification: 'Certification', visor: 'Visor', rotation: 'Rotation', charging: 'Charging' };
+      return '<tr><td>' + (labels[k] || k) + '</td><td>' + specs[k] + '</td></tr>';
+    }).join('');
+    document.getElementById('tab-specs').innerHTML = '<table class="spec-table">' + specRows + '</table>';
+    document.getElementById('tab-features').innerHTML = (p.features || []).map(function (f) {
+      return '<div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-light)"><i class="bx bx-check-circle" style="font-size:1.3rem;color:var(--success);flex-shrink:0"></i><span style="color:#555">' + f + '</span></div>';
+    }).join('');
+
+    var reviews = getReviewsForProduct(p.id);
+    var reviewsHTML = reviews.length ? reviews.map(function (r) {
+      return '<div class="review-card"><div class="review-header"><div class="review-avatar">' + r.author.charAt(0) + '</div><div><h5>' + r.author + '</h5><div class="review-date">' + r.date + '</div></div><div style="margin-left:auto">' + starRating(r.rating, '.9rem') + '</div></div><h4>' + r.title + '</h4><p>' + r.body + '</p></div>';
+    }).join('') : '<p style="color:#999;text-align:center;padding:30px">No reviews yet. Be the first to review this product.</p>';
+    reviewsHTML += '<div style="margin-top:30px"><button class="btn-outline" onclick="arkoToast(\'Review submission is a demo feature\')"><i class="bx bx-pencil"></i>Write a Review</button></div>';
+    document.getElementById('tab-reviews').innerHTML = reviewsHTML;
+
+    var related = ARKO_DATA.accessories.filter(function (a) { return a.id !== p.id; }).slice(0, 4);
+    document.getElementById('accRelated').innerHTML = related.map(productCardHTML).join('');
+
+    document.getElementById('spName').textContent = p.name;
+    document.getElementById('spPrice').textContent = formatPrice(p.price);
+    document.getElementById('spAddCart').onclick = addToCartFromAcc;
+    document.getElementById('spBuyNow').onclick = buyNowFromAcc;
+
+    var sticky = document.getElementById('stickyPurchase');
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 600) sticky.classList.add('is-visible'); else sticky.classList.remove('is-visible');
+    });
+
+    function changeQty(delta) { qty = Math.max(1, qty + delta); document.getElementById('qtyInput').value = qty; }
+    function addToCartFromAcc() {
+      var opts = {};
+      if (p.colors) opts.color = p.colors[selectedColor].name;
+      if (p.sizes) opts.size = p.sizes[selectedSize];
+      ARKO_STORE.addToCart(p.id, qty, opts);
+      arkoToast('Added to cart', 'success');
+    }
+    function buyNowFromAcc() { addToCartFromAcc(); window.location.href = '/checkout.html'; }
+    function toggleWishFromAcc(btn) {
+      var added = ARKO_STORE.toggleWishlist(p.id);
+      arkoToast(added ? 'Added to wishlist' : 'Removed from wishlist', added ? 'success' : 'default');
+    }
+  </script>
+</body>
+</html>

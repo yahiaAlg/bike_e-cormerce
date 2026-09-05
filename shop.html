@@ -1,325 +1,213 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shop Motorcycles — ARKO</title>
-<meta name="description" content="Browse the full ARKO electric enduro range. Filter by category, price, range and availability.">
-
-<!-- Bootstrap 5 grid utilities only (heavily overridden below) -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap-grid.min.css" rel="stylesheet">
-<!-- Boxicons -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
-<!-- Type -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- Shared design system (tokens, type, buttons, nav, all section + component styles) -->
-<link href="css/base.css" rel="stylesheet">
-<!-- Shared e-commerce layer (cards, filters, drawers, modals, toasts) -->
-<link href="css/ecommerce.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop Motorcycles — ARKO</title>
+  <meta name="description" content="Browse the full range of ARKO electric motorcycles. Filter by category, price, range, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
 </head>
-<body>
+<body data-active="shop">
+  <div data-header></div>
 
-<!-- =========================================================
-     NAVIGATION + SHARED COMMERCE OVERLAYS
-========================================================== -->
-<header class="nav" id="siteNav">
-  <a href="index.html" class="nav-logo"><span class="dot"></span>ARKO</a>
-  <nav class="nav-links" aria-label="Primary">
-    <div class="nav-item has-mega">
-      <button class="nav-mega-trigger" aria-expanded="false">Shop <i class='bx bx-chevron-down'></i></button>
-      <div class="mega-menu">
-        <div class="container-x mega-menu-inner">
-          <div class="mega-col">
-            <p class="mega-col-title">Motorcycles</p>
-            <a href="shop.html?category=enduro">Enduro</a>
-            <a href="shop.html?category=trail">Trail</a>
-            <a href="shop.html?category=adventure">Adventure</a>
-            <a href="shop.html?category=performance">Performance</a>
-            <a href="shop.html" class="mega-col-all">All motorcycles <i class='bx bx-right-arrow-alt'></i></a>
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">The Fleet</div>
+      <h1 class="section-title">Shop Motorcycles</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <span>Motorcycles</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div class="shop-layout">
+        <aside class="filter-sidebar" id="filterSidebar">
+          <div class="filter-group">
+            <h5>Category</h5>
+            <div id="filterCategories"></div>
           </div>
-          <div class="mega-col">
-            <p class="mega-col-title">Accessories</p>
-            <a href="accessories.html?category=batteries">Batteries &amp; chargers</a>
-            <a href="accessories.html?category=protection">Protection</a>
-            <a href="accessories.html?category=gear">Riding gear</a>
-            <a href="accessories.html?category=parts">Parts</a>
-            <a href="accessories.html" class="mega-col-all">All accessories <i class='bx bx-right-arrow-alt'></i></a>
+          <div class="filter-group">
+            <h5>Price Range</h5>
+            <div class="filter-price-range">
+              <input type="range" id="priceRange" min="9000" max="22000" step="500" value="22000" style="width:100%;accent-color:var(--ink)" />
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:.82rem;color:#666">
+                <span>€9,000</span>
+                <span id="priceMaxLabel">€22,000</span>
+              </div>
+            </div>
           </div>
-          <div class="mega-col">
-            <p class="mega-col-title">Discover</p>
-            <a href="configurator.html">Build &amp; configure</a>
-            <a href="compare.html">Compare models</a>
-            <a href="test-ride.html">Book a test ride</a>
-            <a href="dealers.html">Find a dealer</a>
+          <div class="filter-group">
+            <h5>Minimum Range</h5>
+            <div id="filterRange"></div>
           </div>
-          <div class="mega-feature">
-            <div class="mega-feature-media"><img data-q="enduro motorcycle dirt trail forest,640,800" alt="ARKO RVX GT studio shot"></div>
-            <p class="mega-feature-name">RVX GT</p>
-            <p class="body-m on-dark">The halo model. Nothing above it.</p>
-            <a href="product.html?id=rvx-gt" class="btn-line" style="color:#fff">Explore <i class='bx bx-right-arrow-alt'></i></a>
+          <div class="filter-group">
+            <h5>Availability</h5>
+            <label class="filter-option"><input type="checkbox" id="filterInStock" checked> <label for="filterInStock">In Stock</label></label>
+            <label class="filter-option"><input type="checkbox" id="filterPreOrder" checked> <label for="filterPreOrder">Pre-Order</label></label>
+          </div>
+          <div class="filter-group">
+            <h5>Color</h5>
+            <div class="filter-colors" id="filterColors"></div>
+          </div>
+          <button class="btn-outline btn-sm btn-block" onclick="clearFilters()">Clear All Filters</button>
+        </aside>
+
+        <div class="shop-results">
+          <div class="shop-toolbar">
+            <div class="result-count"><strong id="resultCount">0</strong> motorcycles found</div>
+            <div class="shop-toolbar-right">
+              <select id="sortBy">
+                <option value="featured">Sort: Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+                <option value="range">Longest Range</option>
+              </select>
+              <div class="view-toggle">
+                <button class="active" data-view="grid"><i class='bx bx-grid-alt'></i></button>
+                <button data-view="list"><i class='bx bx-list-ul'></i></button>
+              </div>
+              <button class="btn-outline btn-sm filter-toggle-mobile" onclick="document.getElementById('filterSidebar').classList.toggle('is-open')"><i class='bx bx-filter'></i> Filters</button>
+            </div>
+          </div>
+          <div class="product-grid" id="shopGrid"></div>
+          <div class="empty-state" id="shopEmpty" style="display:none">
+            <i class='bx bx-search-alt'></i>
+            <h3>No motorcycles match your filters</h3>
+            <p>Try adjusting your filters or clearing them to see the full range.</p>
+            <button class="btn-dark" onclick="clearFilters()">Clear Filters</button>
           </div>
         </div>
       </div>
     </div>
-    <a href="index.html#model">Model</a>
-    <a href="index.html#technology">Technology</a>
-    <a href="index.html#story">Our Story</a>
-  </nav>
-  <div class="nav-right">
-    <button class="nav-icon-btn" id="searchToggle" aria-label="Search"><i class='bx bx-search'></i></button>
-    <a href="wishlist.html" class="nav-icon-btn" aria-label="Wishlist"><i class='bx bx-heart'></i><span class="nav-badge nav-wishlist-count" id="wishlistCount">0</span></a>
-    <a href="account.html" class="nav-icon-btn nav-icon-account" aria-label="Account"><i class='bx bx-user'></i></a>
-    <button class="nav-icon-btn" id="cartToggle" aria-label="Cart"><i class='bx bx-shopping-bag'></i><span class="nav-badge nav-cart-count" id="cartCount">0</span></button>
-    <button class="nav-burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</header>
+  </section>
 
-<div class="mobile-menu" id="mobileMenu">
-  <div class="mm-links">
-    <a href="shop.html">Shop</a>
-    <a href="index.html#model">Model</a>
-    <a href="index.html#technology">Technology</a>
-    <a href="index.html#story">Our Story</a>
-  </div>
-  <div class="mm-sub">
-    <a href="configurator.html"><i class='bx bx-slider-alt'></i>Configure</a>
-    <a href="compare.html"><i class='bx bx-git-compare'></i>Compare</a>
-    <a href="wishlist.html"><i class='bx bx-heart'></i>Wishlist</a>
-    <a href="account.html"><i class='bx bx-user'></i>Account</a>
-    <a href="support.html"><i class='bx bx-help-circle'></i>Support</a>
-  </div>
-  <div class="mm-foot">
-    <a href="cart.html" class="btn-volt">View cart</a>
-  </div>
-</div>
+  <div data-footer></div>
 
-<!-- =========================================================
-     SHARED COMMERCE OVERLAYS (search / cart drawer / compare tray /
-     quick view) — duplicated verbatim on every page. Rendering logic
-     lives in js/ecommerce.js.
-========================================================== -->
-<div class="search-overlay" id="searchOverlay">
-  <button class="search-close" aria-label="Close search"><i class='bx bx-x'></i></button>
-  <div class="container-x search-overlay-inner">
-    <form role="search">
-      <i class='bx bx-search'></i>
-      <input type="search" placeholder="Search motorcycles, accessories…" aria-label="Search">
-    </form>
-    <div class="search-suggest">
-      <p class="eyebrow">Popular searches</p>
-      <div class="search-suggest-tags">
-        <a href="search.html?q=RVX+GT">RVX GT</a>
-        <a href="search.html?q=enduro">Enduro</a>
-        <a href="search.html?q=battery">Battery packs</a>
-        <a href="search.html?q=helmet">Helmets</a>
-        <a href="search.html?q=adventure">Adventure</a>
-      </div>
-    </div>
-  </div>
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    var state = { category: [], priceMax: 22000, minRange: 0, inStock: true, preOrder: true, colors: [], sort: 'featured' };
 
-<div class="drawer-scrim" id="cartDrawerScrim"></div>
-<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
-  <div class="drawer-head">
-    <p class="drawer-title">Your cart</p>
-    <button class="drawer-close" aria-label="Close cart"><i class='bx bx-x'></i></button>
-  </div>
-  <div class="drawer-body" id="cartDrawerBody"></div>
-  <div class="drawer-footer" id="cartDrawerFooter">
-    <div class="drawer-total"><span>Subtotal</span><span class="mono-num" id="cartDrawerTotal">€0</span></div>
-    <a href="checkout.html" class="btn-volt">Checkout</a>
-    <a href="cart.html" class="btn-ghost drawer-view-cart">View cart</a>
-  </div>
-</aside>
+    // Parse URL params
+    var params = new URLSearchParams(location.search);
+    if (params.get('category')) state.category = [params.get('category')];
 
-<div class="compare-tray" id="compareTray">
-  <div class="container-x compare-tray-inner">
-    <div class="compare-tray-thumbs"></div>
-    <div class="compare-tray-info"><span class="compare-tray-count">0 / 4</span><span>selected to compare</span></div>
-    <div class="compare-tray-actions">
-      <button class="compare-tray-clear">Clear</button>
-      <a href="compare.html" class="btn-volt compare-tray-cta">Compare</a>
-    </div>
-  </div>
-</div>
+    // Build category filters
+    var cats = ['Enduro', 'Trail', 'Adventure', 'Performance'];
+    document.getElementById('filterCategories').innerHTML = cats.map(function (c) {
+      var count = ARKO_DATA.motorcycles.filter(function (m) { return m.category === c; }).length;
+      var checked = state.category.indexOf(c) > -1 ? 'checked' : '';
+      return '<label class="filter-option"><input type="checkbox" class="cat-filter" value="' + c + '" ' + checked + '> <label>' + c + '</label> <span class="count">(' + count + ')</span></label>';
+    }).join('');
 
-<div class="modal-scrim" id="qvScrim"></div>
-<div class="modal" id="qvModal" role="dialog" aria-modal="true" aria-label="Quick view">
-  <button class="modal-close" aria-label="Close quick view"><i class='bx bx-x'></i></button>
-  <div class="qv-body" id="qvBody"></div>
-</div>
-<!-- =========================================================
-     PAGE HEADER
-========================================================== -->
-<header class="page-header page-header-sm">
-  <div class="page-header-media">
-    <img data-q="mountain trail motorcycle distance,1920,900" alt="ARKO motorcycles lined up on a mountain trail">
-  </div>
-  <div class="container-x page-header-inner">
-    <p class="breadcrumb"><a href="index.html">Home</a><i class='bx bx-chevron-right'></i><span>Shop</span></p>
-    <h1 class="page-header-title">The full range.</h1>
-    <p class="page-header-sub body-m on-dark">Twelve electric enduro, trail, adventure and performance machines. Filter by what matters, compare what's close, and find the one that fits your terrain.</p>
-  </div>
-</header>
+    // Build range filters
+    var ranges = [{ label: '50+ km', val: 50 }, { label: '100+ km', val: 100 }, { label: '150+ km', val: 150 }];
+    document.getElementById('filterRange').innerHTML = ranges.map(function (r) {
+      return '<label class="filter-option"><input type="radio" name="minRange" value="' + r.val + '" ' + (state.minRange == r.val ? 'checked' : '') + '> <label>' + r.label + '</label></label>';
+    }).join('');
 
-<!-- =========================================================
-     SHOP
-========================================================== -->
-<section class="section" style="padding-top:clamp(60px,8vw,90px)" id="shopSection">
-  <div class="container-x">
-    <div class="shop-shell">
+    // Build color filters
+    var allColors = {};
+    ARKO_DATA.motorcycles.forEach(function (m) {
+      (m.colors || []).forEach(function (c) {
+        if (!allColors[c.name]) allColors[c.name] = c.hex;
+      });
+    });
+    document.getElementById('filterColors').innerHTML = Object.keys(allColors).map(function (name) {
+      return '<span class="swatch" style="background:' + allColors[name] + '" data-color="' + name + '" title="' + name + '"></span>';
+    }).join('');
 
-      <!-- Filter sidebar -->
-      <aside class="filter-sidebar" id="filterSidebar">
-        <div class="filter-sidebar-head">
-          <p class="filter-title-main">Filters</p>
-          <div style="display:flex;align-items:center;gap:18px">
-            <button class="filter-clear" id="filterClear">Clear all</button>
-            <button class="filter-close-mobile" id="filterCloseMobile" aria-label="Close filters"><i class='bx bx-x'></i></button>
-          </div>
-        </div>
+    // Event listeners
+    document.querySelectorAll('.cat-filter').forEach(function (el) {
+      el.addEventListener('change', function () {
+        state.category = Array.from(document.querySelectorAll('.cat-filter:checked')).map(function (c) { return c.value; });
+        render();
+      });
+    });
+    document.getElementById('priceRange').addEventListener('input', function (e) {
+      state.priceMax = parseInt(e.target.value);
+      document.getElementById('priceMaxLabel').textContent = '\u20ac' + state.priceMax.toLocaleString('en-US');
+      render();
+    });
+    document.querySelectorAll('input[name="minRange"]').forEach(function (el) {
+      el.addEventListener('change', function (e) {
+        state.minRange = parseInt(e.target.value);
+        render();
+      });
+    });
+    document.getElementById('filterInStock').addEventListener('change', function (e) { state.inStock = e.target.checked; render(); });
+    document.getElementById('filterPreOrder').addEventListener('change', function (e) { state.preOrder = e.target.checked; render(); });
+    document.querySelectorAll('.filter-colors .swatch').forEach(function (el) {
+      el.addEventListener('click', function () {
+        el.classList.toggle('active');
+        state.colors = Array.from(document.querySelectorAll('.filter-colors .swatch.active')).map(function (s) { return s.dataset.color; });
+        render();
+      });
+    });
+    document.getElementById('sortBy').addEventListener('change', function (e) { state.sort = e.target.value; render(); });
 
-        <div class="filter-group">
-          <p class="filter-group-title">Category</p>
-          <div id="filterCategoryGroup">
-            <label class="filter-check"><input type="checkbox" value="enduro" data-filter="category"><span>Enduro</span><span class="filter-count" data-count-for="enduro"></span></label>
-            <label class="filter-check"><input type="checkbox" value="trail" data-filter="category"><span>Trail</span><span class="filter-count" data-count-for="trail"></span></label>
-            <label class="filter-check"><input type="checkbox" value="adventure" data-filter="category"><span>Adventure</span><span class="filter-count" data-count-for="adventure"></span></label>
-            <label class="filter-check"><input type="checkbox" value="performance" data-filter="category"><span>Performance</span><span class="filter-count" data-count-for="performance"></span></label>
-          </div>
-        </div>
+    function clearFilters() {
+      state = { category: [], priceMax: 22000, minRange: 0, inStock: true, preOrder: true, colors: [], sort: 'featured' };
+      document.querySelectorAll('.cat-filter').forEach(function (c) { c.checked = false; });
+      document.getElementById('priceRange').value = 22000;
+      document.getElementById('priceMaxLabel').textContent = '\u20ac22,000';
+      document.querySelectorAll('input[name="minRange"]').forEach(function (r) { r.checked = false; });
+      document.getElementById('filterInStock').checked = true;
+      document.getElementById('filterPreOrder').checked = true;
+      document.querySelectorAll('.filter-colors .swatch').forEach(function (s) { s.classList.remove('active'); });
+      document.getElementById('sortBy').value = 'featured';
+      render();
+    }
 
-        <div class="filter-group">
-          <p class="filter-group-title">Price up to</p>
-          <div class="filter-range">
-            <input type="range" id="filterPrice" min="8000" max="24000" step="500" value="24000">
-          </div>
-          <div class="filter-range-labels"><span>€8,000</span><span id="filterPriceVal">€24,000</span></div>
-        </div>
+    function getFiltered() {
+      var products = ARKO_DATA.motorcycles.slice();
+      if (state.category.length) products = products.filter(function (p) { return state.category.indexOf(p.category) > -1; });
+      products = products.filter(function (p) { return p.price <= state.priceMax; });
+      if (state.minRange > 0) products = products.filter(function (p) { return parseInt(p.specs.range) >= state.minRange; });
+      if (!state.inStock) products = products.filter(function (p) { return p.availability !== 'in-stock'; });
+      if (!state.preOrder) products = products.filter(function (p) { return p.availability !== 'pre-order'; });
+      if (state.colors.length) products = products.filter(function (p) {
+        return (p.colors || []).some(function (c) { return state.colors.indexOf(c.name) > -1; });
+      });
+      switch (state.sort) {
+        case 'price-low': products.sort(function (a, b) { return a.price - b.price; }); break;
+        case 'price-high': products.sort(function (a, b) { return b.price - a.price; }); break;
+        case 'rating': products.sort(function (a, b) { return b.rating - a.rating; }); break;
+        case 'range': products.sort(function (a, b) { return parseInt(b.specs.range) - parseInt(a.specs.range); }); break;
+      }
+      return products;
+    }
 
-        <div class="filter-group">
-          <p class="filter-group-title">Range per charge, min</p>
-          <div class="filter-range">
-            <input type="range" id="filterRange" min="90" max="320" step="10" value="90">
-          </div>
-          <div class="filter-range-labels"><span id="filterRangeVal">90 km</span><span>320 km</span></div>
-        </div>
+    function render() {
+      var filtered = getFiltered();
+      document.getElementById('resultCount').textContent = filtered.length;
+      var grid = document.getElementById('shopGrid');
+      var empty = document.getElementById('shopEmpty');
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        grid.innerHTML = filtered.map(productCardHTML).join('');
+      }
+    }
 
-        <div class="filter-group">
-          <p class="filter-group-title">Availability</p>
-          <div id="filterAvailabilityGroup">
-            <label class="filter-check"><input type="checkbox" value="in-stock" data-filter="availability"><span>In stock</span><span class="filter-count" data-count-for="in-stock"></span></label>
-            <label class="filter-check"><input type="checkbox" value="pre-order" data-filter="availability"><span>Pre-order</span><span class="filter-count" data-count-for="pre-order"></span></label>
-            <label class="filter-check"><input type="checkbox" value="out-of-stock" data-filter="availability"><span>Out of stock</span><span class="filter-count" data-count-for="out-of-stock"></span></label>
-          </div>
-        </div>
-
-        <div class="filter-group" style="border-bottom:0">
-          <p class="filter-group-title">Rating</p>
-          <div class="filter-rating-options" id="filterRatingGroup">
-            <button type="button" data-rating="4.5">4.5+ <i class='bx bxs-star'></i></button>
-            <button type="button" data-rating="4">4.0+ <i class='bx bxs-star'></i></button>
-            <button type="button" data-rating="0">All</button>
-          </div>
-        </div>
-      </aside>
-
-      <!-- Toolbar + grid -->
-      <div>
-        <div class="shop-toolbar">
-          <button class="filter-toggle-mobile" id="filterToggleMobile"><i class='bx bx-slider-alt'></i> Filters</button>
-          <div class="shop-search">
-            <i class='bx bx-search'></i>
-            <input type="text" id="shopSearch" placeholder="Search by name or category…" aria-label="Search motorcycles">
-          </div>
-          <div class="shop-toolbar-right">
-            <span class="results-count" id="resultsCount">12 motorcycles</span>
-            <select class="sort-select" id="sortSelect" aria-label="Sort by">
-              <option value="featured">Featured</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="rating">Highest Rated</option>
-              <option value="newest">Newest</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="product-grid" id="productGrid" aria-live="polite">
-          <!-- injected by js/shop.js -->
-        </div>
-
-        <nav class="pagination" id="pagination" aria-label="Shop pagination"></nav>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<footer class="footer" id="footer">
-  <div class="container-x">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="index.html" class="nav-logo"><span class="dot"></span>ARKO</a>
-        <p>Electric enduro motorcycles designed and engineered for terrain that doesn't forgive.</p>
-        <div class="footer-social">
-          <a href="#" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
-          <a href="#" aria-label="YouTube"><i class='bx bxl-youtube'></i></a>
-          <a href="#" aria-label="TikTok"><i class='bx bxl-tiktok'></i></a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h5>Shop</h5>
-        <ul>
-          <li><a href="shop.html">All motorcycles</a></li>
-          <li><a href="accessories.html">Accessories</a></li>
-          <li><a href="configurator.html">Configure &amp; build</a></li>
-          <li><a href="compare.html">Compare models</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Support</h5>
-        <ul>
-          <li><a href="support.html">Help centre</a></li>
-          <li><a href="dealers.html">Find a dealer</a></li>
-          <li><a href="test-ride.html">Book a test ride</a></li>
-          <li><a href="orders.html">Track an order</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Stay in the loop</h5>
-        <form class="newsletter-form" id="newsletterForm">
-          <input type="email" required placeholder="Email address" aria-label="Email address">
-          <button type="submit" aria-label="Subscribe"><i class='bx bx-right-arrow-alt'></i></button>
-        </form>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 ARKO Motors. All rights reserved.</p>
-      <div class="footer-legal">
-        <a href="#">Terms</a>
-        <a href="#">Privacy</a>
-        <a href="#">Cookies</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- =========================================================
-     LIBRARIES
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
-<!-- Shared interaction layer: nav, reveals, image resolver -->
-<script src="js/main.js"></script>
-<!-- Shared commerce data + interaction layer -->
-<script src="js/data.js"></script>
-<script src="js/ecommerce.js"></script>
-<!-- Shop page: filtering, sorting, search, pagination -->
-<script src="js/shop.js"></script>
-
+    render();
+  </script>
 </body>
 </html>

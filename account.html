@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account — ARKO</title>
+  <meta name="description" content="Your ARKO account dashboard." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+</head>
+<body data-active="shop">
+  <div data-header></div>
+
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">Dashboard</div>
+      <h1 class="section-title">My Account</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <span>Account</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div class="account-layout">
+        <aside class="account-sidebar">
+          <h4>John Doe</h4>
+          <p style="font-size:.82rem;color:#999;margin-bottom:20px">john@email.com</p>
+          <div class="account-nav-item active" data-section="profile"><i class="bx bx-user"></i>Profile</div>
+          <div class="account-nav-item" data-section="garage"><i class="bx bx-bike"></i>My Garage</div>
+          <div class="account-nav-item" data-section="orders"><i class="bx bx-package"></i>Orders</div>
+          <div class="account-nav-item" data-section="wishlist"><i class="bx bx-heart"></i>Wishlist</div>
+          <div class="account-nav-item" data-section="preferences"><i class="bx bx-cog"></i>Preferences</div>
+          <div class="account-nav-item" data-section="addresses"><i class="bx bx-map"></i>Addresses</div>
+          <div class="account-nav-item" data-section="support" style="margin-top:20px"><i class="bx bx-support"></i>Support</div>
+        </aside>
+
+        <div class="account-content">
+          <!-- Profile -->
+          <div class="account-section active" id="sec-profile">
+            <h2>Profile Information</h2>
+            <div style="background:var(--white);border:1px solid var(--line-light);padding:30px;max-width:600px">
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-control" value="John"></div>
+                <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-control" value="Doe"></div>
+              </div>
+              <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" value="john@email.com"></div>
+              <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-control" value="+49 30 1234567"></div>
+              <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-control" value="1990-05-15"></div>
+              <button class="btn-volt" onclick="arkoToast('Profile saved','success')"><i class="bx bx-check"></i>Save Changes</button>
+            </div>
+          </div>
+
+          <!-- Garage -->
+          <div class="account-section" id="sec-garage">
+            <h2>My Garage</h2>
+            <p style="color:#777;margin-bottom:24px">Motorcycles you own, registered for warranty and service tracking.</p>
+            <div id="garageList"></div>
+            <a href="/shop.html" class="btn-outline btn-sm" style="margin-top:14px"><i class="bx bx-plus"></i>Add a Motorcycle</a>
+          </div>
+
+          <!-- Orders -->
+          <div class="account-section" id="sec-orders">
+            <h2>Recent Orders</h2>
+            <div id="accountOrders"></div>
+            <a href="/orders.html" class="btn-line" style="margin-top:14px">View All Orders <i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+
+          <!-- Wishlist -->
+          <div class="account-section" id="sec-wishlist">
+            <h2>Wishlist</h2>
+            <div id="accountWish"></div>
+          </div>
+
+          <!-- Preferences -->
+          <div class="account-section" id="sec-preferences">
+            <h2>Preferences</h2>
+            <div style="background:var(--white);border:1px solid var(--line-light);padding:30px;max-width:600px">
+              <div class="form-group">
+                <label class="form-check"><input type="checkbox" checked> <label>Receive product updates and news</label></label>
+              </div>
+              <div class="form-group">
+                <label class="form-check"><input type="checkbox" checked> <label>Receive order notifications</label></label>
+              </div>
+              <div class="form-group">
+                <label class="form-check"><input type="checkbox"> <label>Receive promotional offers</label></label>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Language</label>
+                <select class="form-select"><option>English</option><option>Deutsch</option><option>Français</option><option>Italiano</option><option>Español</option></select>
+              </div>
+              <button class="btn-volt" onclick="arkoToast('Preferences saved','success')"><i class="bx bx-check"></i>Save Preferences</button>
+            </div>
+          </div>
+
+          <!-- Addresses -->
+          <div class="account-section" id="sec-addresses">
+            <h2>Saved Addresses</h2>
+            <div style="background:var(--white);border:1px solid var(--line-light);padding:24px;margin-bottom:14px;max-width:600px">
+              <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
+                <h5 style="font-weight:800">Home</h5>
+                <span class="chip volt">Default</span>
+              </div>
+              <p style="color:#555;line-height:1.6">John Doe<br>Torstraße 112<br>10119 Berlin, Germany<br>+49 30 1234567</p>
+              <div style="display:flex;gap:10px;margin-top:14px">
+                <button class="btn-outline btn-sm" onclick="arkoToast('Edit address is a demo feature')">Edit</button>
+                <button class="btn-outline btn-sm" onclick="arkoToast('Address removed')">Remove</button>
+              </div>
+            </div>
+            <button class="btn-outline btn-sm" onclick="arkoToast('Add address is a demo feature')"><i class="bx bx-plus"></i>Add New Address</button>
+          </div>
+
+          <!-- Support -->
+          <div class="account-section" id="sec-support">
+            <h2>Support</h2>
+            <p style="color:#777;margin-bottom:20px">Need help? We're here for you.</p>
+            <div style="display:flex;gap:14px;flex-wrap:wrap">
+              <a href="/support.html" class="btn-volt"><i class="bx bx-help-circle"></i>Help Center</a>
+              <a href="/dealers.html" class="btn-outline"><i class="bx bx-map"></i>Find a Dealer</a>
+              <a href="/test-ride.html" class="btn-outline"><i class="bx bx-calendar"></i>Book a Test Ride</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // Nav switching
+    document.querySelectorAll('.account-nav-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        document.querySelectorAll('.account-nav-item').forEach(function (x) { x.classList.remove('active'); });
+        document.querySelectorAll('.account-section').forEach(function (x) { x.classList.remove('active'); });
+        item.classList.add('active');
+        document.getElementById('sec-' + item.dataset.section).classList.add('active');
+      });
+    });
+
+    // Garage
+    var garageBikes = ['rvx', 'trail-s'];
+    document.getElementById('garageList').innerHTML = garageBikes.map(function (id) {
+      var m = getMotorcycleById(id);
+      if (!m) return '';
+      return '<div class="garage-card"><img src="' + ARKO_IMG.search(m.image) + '" alt="' + m.name + '"><div><h4 style="font-weight:800;margin-bottom:4px">' + m.name + '</h4><p style="color:#777;font-size:.85rem;margin-bottom:8px">VIN: ARKO' + id.toUpperCase().replace(/[^A-Z0-9]/g, '') + '20260001</p><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip success">Warranty Active</span><span class="chip">Service Due: 500 km</span></div><div style="display:flex;gap:10px;margin-top:14px"><a href="/product.html?id=' + m.id + '" class="btn-outline btn-sm">View Details</a><a href="/dealers.html" class="btn-outline btn-sm"><i class="bx bx-wrench"></i>Book Service</a></div></div></div>';
+    }).join('');
+
+    // Orders
+    var orders = ARKO_DATA.orders.slice(0, 3);
+    document.getElementById('accountOrders').innerHTML = orders.map(function (o) {
+      return '<div class="order-card"><div class="order-card-header"><div><h4>' + o.id + '</h4><div class="order-date">' + o.date + '</div></div><span class="order-status-badge ' + o.status + '">' + o.status + '</span></div><div class="order-items-list">' + o.items.map(function (it) { return '<div class="order-item-mini"><span>' + it.name + ' ×' + it.qty + '</span></div>'; }).join('') + '</div><div class="order-card-footer"><a href="/orders.html" class="btn-line">Track Order <i class="bx bx-right-arrow-alt"></i></a><div class="total">' + formatPrice(o.total) + '</div></div></div>';
+    }).join('');
+
+    // Wishlist
+    var wish = ARKO_STORE.getWishlist();
+    if (wish.length === 0) {
+      document.getElementById('accountWish').innerHTML = '<p style="color:#999">Your wishlist is empty. <a href="/shop.html" style="color:var(--ink);font-weight:700">Browse motorcycles</a></p>';
+    } else {
+      document.getElementById('accountWish').innerHTML = wish.map(function (id) {
+        var p = getProductById(id); if (!p) return '';
+        return '<div style="display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line-light);margin-bottom:10px;background:var(--white)"><img src="' + ARKO_IMG.search(p.image) + '" style="width:60px;height:60px;object-fit:cover"><div style="flex:1"><h6 style="font-weight:700">' + p.name + '</h6><div style="font-size:.85rem;color:#999">' + formatPrice(p.price) + '</div></div><a href="/product.html?id=' + p.id + '" class="btn-outline btn-sm">View</a></div>';
+      }).join('');
+    }
+  </script>
+</body>
+</html>

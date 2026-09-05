@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find a Dealer — ARKO</title>
+  <meta name="description" content="Find an ARKO dealer or showroom near you across Europe." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+</head>
+<body data-active="dealers">
+  <div data-header></div>
+
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">Showrooms</div>
+      <h1 class="section-title">Find a Dealer</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <span>Dealers</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div class="dealer-search">
+        <div style="position:relative;max-width:500px">
+          <input type="text" class="form-control" id="dealerSearch" placeholder="Search by city or country..." style="padding-left:44px;font-size:1rem">
+          <i class="bx bx-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.2rem;color:#999"></i>
+        </div>
+      </div>
+      <div class="dealers-layout">
+        <div class="dealer-list" id="dealerList"></div>
+        <div class="dealer-map" id="dealerMap">
+          <img src="https://images.pexels.com/photos/2598680/pexels-photo-2598680.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Map" />
+          <div class="dealer-map-overlay">
+            <div>
+              <i class="bx bx-map" style="font-size:3rem;margin-bottom:10px"></i>
+              <h3 style="font-weight:800">8 Dealers Across Europe</h3>
+              <p style="color:#c8c8c8;font-size:.9rem">Select a dealer to see location</p>
+            </div>
+          </div>
+          <div id="mapPins"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    function renderDealers(filter) {
+      filter = filter || '';
+      var dealers = ARKO_DATA.dealers;
+      if (filter) {
+        var f = filter.toLowerCase();
+        dealers = dealers.filter(function (d) {
+          return d.city.toLowerCase().indexOf(f) > -1 || d.country.toLowerCase().indexOf(f) > -1 || d.name.toLowerCase().indexOf(f) > -1;
+        });
+      }
+
+      var list = document.getElementById('dealerList');
+      if (dealers.length === 0) {
+        list.innerHTML = '<div class="empty-state"><i class="bx bx-map-alt"></i><h3>No dealers found</h3><p>Try a different search term.</p></div>';
+        return;
+      }
+
+      list.innerHTML = dealers.map(function (d, i) {
+        return '<div class="dealer-card" onclick="selectDealer(\'' + d.id + '\')">' +
+          '<h4>' + d.name + '</h4>' +
+          '<div class="dealer-city"><i class="bx bx-map-pin"></i> ' + d.address + ', ' + d.city + ', ' + d.country + '</div>' +
+          '<div class="dealer-info">' +
+            '<div><i class="bx bx-phone"></i>' + d.phone + '</div>' +
+            '<div><i class="bx bx-time"></i>' + d.hours + '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:8px;margin-top:12px">' +
+            '<a href="/test-ride.html" class="btn-volt btn-sm"><i class="bx bx-calendar"></i>Test Ride</a>' +
+            '<a href="https://maps.google.com/?q=' + encodeURIComponent(d.address + ' ' + d.city) + '" target="_blank" class="btn-outline btn-sm"><i class="bx bx-directions"></i>Directions</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      // Render map pins
+      var pins = document.getElementById('mapPins');
+      pins.innerHTML = dealers.map(function (d) {
+        var x = ((d.lng + 25) / 50) * 100;
+        var y = ((70 - d.lat) / 50) * 100;
+        x = Math.max(5, Math.min(95, x));
+        y = Math.max(5, Math.min(95, y));
+        return '<div class="dealer-map-pin" style="left:' + x + '%;top:' + y + '%" title="' + d.name + '"></div>';
+      }).join('');
+    }
+
+    function selectDealer(id) {
+      document.querySelectorAll('.dealer-card').forEach(function (c) { c.style.borderColor = ''; });
+      event.currentTarget.style.borderColor = 'var(--ink)';
+    }
+
+    document.getElementById('dealerSearch').addEventListener('input', function (e) {
+      renderDealers(e.target.value);
+    });
+
+    renderDealers();
+  </script>
+</body>
+</html>

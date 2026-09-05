@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Test Ride — ARKO</title>
+  <meta name="description" content="Book a free test ride of any ARKO electric motorcycle at a dealer near you." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+</head>
+<body data-active="shop">
+  <div data-header></div>
+
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">Experience ARKO</div>
+      <h1 class="section-title">Book a Test Ride</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <span>Test Ride</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div class="testride-layout">
+        <div class="testride-form">
+          <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:6px">Schedule Your Ride</h3>
+          <p style="color:#777;font-size:.88rem;margin-bottom:24px">Fill in your details and we'll confirm your test ride within 24 hours.</p>
+          <form onsubmit="submitTestRide(event)">
+            <div class="form-group">
+              <label class="form-label">Select Motorcycle</label>
+              <select class="form-select" id="trModel" required>
+                <option value="">Choose a model...</option>
+                <optgroup label="Motorcycles">
+                  <option value="rvx">ARKO RVX — €14,450</option>
+                  <option value="rvx-pro">ARKO RVX Pro — €18,900</option>
+                  <option value="trail-s">ARKO Trail S — €11,200</option>
+                  <option value="adventure-x">ARKO Adventure X — €16,750</option>
+                  <option value="urban-e">ARKO Urban E — €9,800</option>
+                  <option value="enduro-r">ARKO Enduro R — €15,200</option>
+                  <option value="performance-rs">ARKO Performance RS — €21,500</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Select Dealer</label>
+              <select class="form-select" id="trDealer" required>
+                <option value="">Choose a dealer...</option>
+                <option value="d1">ARKO Berlin Mitte</option>
+                <option value="d2">ARKO Munich</option>
+                <option value="d3">ARKO Amsterdam</option>
+                <option value="d4">ARKO Milan</option>
+                <option value="d5">ARKO Lyon</option>
+                <option value="d6">ARKO Barcelona</option>
+                <option value="d7">ARKO Stockholm</option>
+                <option value="d8">ARKO Lisbon</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Preferred Date</label><input type="date" class="form-control" id="trDate" required></div>
+              <div class="form-group"><label class="form-label">Preferred Time</label>
+                <select class="form-select" id="trTime" required>
+                  <option value="">Choose time...</option>
+                  <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+                  <option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-control" placeholder="John" required></div>
+              <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-control" placeholder="Doe" required></div>
+            </div>
+            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" placeholder="john@email.com" required></div>
+            <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-control" placeholder="+49 30 1234567" required></div>
+            <div class="form-group">
+              <label class="form-label">Motorcycle Licence Number</label>
+              <input type="text" class="form-control" placeholder="Required for test ride" required>
+            </div>
+            <div class="form-group">
+              <label class="form-check"><input type="checkbox" required> <label>I have a valid motorcycle licence and agree to the <a href="#" style="text-decoration:underline">test ride terms</a></label></label>
+            </div>
+            <button type="submit" class="btn-volt btn-lg btn-block"><i class="bx bx-calendar-check"></i>Book Test Ride</button>
+          </form>
+        </div>
+
+        <div class="testride-info">
+          <div class="testride-info-card">
+            <h3>What to Expect</h3>
+            <div class="info-item"><i class="bx bx-time"></i>30–60 minute ride with a trained guide</div>
+            <div class="info-item"><i class="bx bx-id-card"></i>Bring your valid motorcycle licence</div>
+            <div class="info-item"><i class="bx bx-shield-alt"></i>Helmet and protective gear provided</div>
+            <div class="info-item"><i class="bx bx-tachometer"></i>Test on road and off-road terrain</div>
+            <div class="info-item"><i class="bx bx-money"></i>Completely free, no obligation</div>
+          </div>
+          <div class="testride-info-card">
+            <h3>Why Ride Electric?</h3>
+            <div class="info-item"><i class="bx bx-bolt"></i>Instant torque from 0 RPM</div>
+            <div class="info-item"><i class="bx bx-volume-mute"></i>Silent — hear the trail, not the engine</div>
+            <div class="info-item"><i class="bx bx-leaf"></i>Zero emissions, zero fuel</div>
+            <div class="info-item"><i class="bx bx-refresh"></i>30-second battery swap</div>
+          </div>
+          <div class="testride-info-card">
+            <h3>Questions?</h3>
+            <div class="info-item"><i class="bx bx-phone"></i>+49 30 555 0101</div>
+            <div class="info-item"><i class="bx bx-envelope"></i>testride@arko.eu</div>
+            <a href="/support.html" class="btn-ghost btn-sm" style="margin-top:14px">Help Center</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // Set min date to tomorrow
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('trDate').min = tomorrow.toISOString().split('T')[0];
+
+    function submitTestRide(e) {
+      e.preventDefault();
+      var model = document.getElementById('trModel').value;
+      var dealer = document.getElementById('trDealer').value;
+      var date = document.getElementById('trDate').value;
+      var time = document.getElementById('trTime').value;
+      if (!model || !dealer || !date || !time) {
+        arkoToast('Please fill in all fields', 'error');
+        return;
+      }
+      var m = getMotorcycleById(model);
+      var d = ARKO_DATA.dealers.find(function (x) { return x.id === dealer; });
+      arkoToast('Test ride booked for ' + (m ? m.name : '') + ' at ' + (d ? d.name : '') + '!', 'success');
+      setTimeout(function () {
+        document.querySelector('.testride-form').innerHTML = '<div style="text-align:center;padding:40px 20px"><div class="success-icon"><i class="bx bx-check"></i></div><h2 style="font-size:1.6rem;font-weight:800;margin-bottom:12px">Booking Confirmed!</h2><p style="color:#555;max-width:400px;margin:0 auto 24px">Your test ride for ' + (m ? m.name : '') + ' is booked for ' + date + ' at ' + time + ' at ' + (d ? d.name : '') + '. We\'ve sent a confirmation email with all the details.</p><a href="/index.html" class="btn-volt">Back to Home</a></div>';
+      }, 500);
+    }
+  </script>
+</body>
+</html>

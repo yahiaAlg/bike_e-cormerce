@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financing — ARKO</title>
+  <meta name="description" content="Finance your ARKO electric motorcycle with 0% APR plans up to 36 months." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+  <style>
+    .fin-plan { background: var(--white); border: 1px solid var(--line-light); padding: 32px; display: flex; flex-direction: column; gap: 16px; }
+    .fin-plan.featured { border-color: var(--volt); border-width: 2px; position: relative; }
+    .fin-plan.featured::before { content: 'POPULAR'; position: absolute; top: -10px; left: 24px; background: var(--volt); color: var(--ink); font-size: .65rem; font-weight: 800; letter-spacing: .08em; padding: 4px 10px; }
+    .fin-plan h3 { font-size: 1.3rem; font-weight: 800; }
+    .fin-plan .rate { font-size: 2.4rem; font-weight: 800; }
+    .fin-plan .rate span { font-size: 1rem; font-weight: 600; color: #777; }
+    .fin-plan ul li { display: flex; gap: 10px; align-items: center; font-size: .88rem; color: #555; margin-bottom: 8px; }
+    .fin-plan ul li i { color: var(--success); font-size: 1.1rem; }
+    .fin-calc { background: var(--ink); color: var(--white); padding: 40px; }
+    .fin-calc h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 24px; }
+    .fin-calc label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #999; display: block; margin-bottom: 8px; }
+    .fin-calc select, .fin-calc input { width: 100%; padding: 14px 16px; background: rgba(255,255,255,.06); border: 1px solid var(--line-dark); color: var(--white); font-size: .95rem; font-family: inherit; margin-bottom: 20px; }
+    .fin-calc .calc-result { border-top: 1px solid var(--line-dark); padding-top: 24px; margin-top: 10px; }
+    .fin-calc .calc-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: .92rem; color: #c8c8c8; }
+    .fin-calc .calc-total { display: flex; justify-content: space-between; padding-top: 16px; border-top: 2px solid var(--volt); font-size: 1.6rem; font-weight: 800; }
+    .fin-calc .calc-total span:last-child { color: var(--volt); }
+    .fin-plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 50px; }
+    .fin-layout { display: grid; grid-template-columns: 1fr 400px; gap: 40px; align-items: flex-start; }
+    @media (max-width: 860px) { .fin-plans-grid { grid-template-columns: 1fr; } .fin-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-active="shop">
+  <div data-header></div>
+
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">Financing</div>
+      <h1 class="section-title">Ride Now, Pay Later</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <span>Financing</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div class="fin-layout">
+        <div>
+          <div class="fin-plans-grid">
+            <div class="fin-plan">
+              <h3>12 Months</h3>
+              <div class="rate">0% <span>APR</span></div>
+              <p style="font-size:.85rem;color:#777">Pay off your bike in a year with zero interest.</p>
+              <ul>
+                <li><i class="bx bx-check-circle"></i>0% interest</li>
+                <li><i class="bx bx-check-circle"></i>No early repayment fee</li>
+                <li><i class="bx bx-check-circle"></i>Instant approval</li>
+              </ul>
+              <button class="btn-outline btn-block" onclick="arkoToast('Application started (demo)')">Apply Now</button>
+            </div>
+            <div class="fin-plan featured">
+              <h3>24 Months</h3>
+              <div class="rate">0% <span>APR</span></div>
+              <p style="font-size:.85rem;color:#777">Our most popular plan — balanced monthly payments.</p>
+              <ul>
+                <li><i class="bx bx-check-circle"></i>0% interest</li>
+                <li><i class="bx bx-check-circle"></i>No early repayment fee</li>
+                <li><i class="bx bx-check-circle"></i>Instant approval</li>
+                <li><i class="bx bx-check-circle"></i>€0 down payment option</li>
+              </ul>
+              <button class="btn-volt btn-block" onclick="arkoToast('Application started (demo)')">Apply Now</button>
+            </div>
+            <div class="fin-plan">
+              <h3>36 Months</h3>
+              <div class="rate">0% <span>APR</span></div>
+              <p style="font-size:.85rem;color:#777">Lowest monthly payments, longest 0% period.</p>
+              <ul>
+                <li><i class="bx bx-check-circle"></i>0% interest</li>
+                <li><i class="bx bx-check-circle"></i>No early repayment fee</li>
+                <li><i class="bx bx-check-circle"></i>Instant approval</li>
+              </ul>
+              <button class="btn-outline btn-block" onclick="arkoToast('Application started (demo)')">Apply Now</button>
+            </div>
+          </div>
+
+          <div style="background:var(--white);border:1px solid var(--line-light);padding:32px;margin-bottom:30px">
+            <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:20px">How It Works</h3>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+              <div><div style="width:40px;height:40px;background:var(--volt);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:10px">1</div><h6 style="font-weight:700;margin-bottom:4px">Choose Your Bike</h6><p style="font-size:.82rem;color:#777">Select a motorcycle and add to cart.</p></div>
+              <div><div style="width:40px;height:40px;background:var(--volt);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:10px">2</div><h6 style="font-weight:700;margin-bottom:4px">Apply at Checkout</h6><p style="font-size:.82rem;color:#777">Get an instant decision in 60 seconds.</p></div>
+              <div><div style="width:40px;height:40px;background:var(--volt);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:10px">3</div><h6 style="font-weight:700;margin-bottom:4px">Sign & Ride</h6><p style="font-size:.82rem;color:#777">Sign digitally and schedule delivery.</p></div>
+              <div><div style="width:40px;height:40px;background:var(--volt);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:10px">4</div><h6 style="font-weight:700;margin-bottom:4px">Pay Monthly</h6><p style="font-size:.82rem;color:#777">Automated monthly payments, 0% interest.</p></div>
+            </div>
+          </div>
+
+          <div style="background:var(--white);border:1px solid var(--line-light);padding:32px">
+            <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:20px">Frequently Asked Questions</h3>
+            <div class="accordion-item open"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><span>Who is eligible for financing?</span><i class="bx bx-chevron-down"></i></div><div class="accordion-body"><div class="accordion-body-inner">Residents of EU member states, the UK, Norway, and Switzerland, age 18+, with a valid ID and regular income. A soft credit check is performed — it won't affect your credit score.</div></div></div>
+            <div class="accordion-item"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><span>Is there a down payment?</span><i class="bx bx-chevron-down"></i></div><div class="accordion-body"><div class="accordion-body-inner">A down payment is optional. You can finance 100% of the purchase price or make a partial down payment to reduce your monthly installments.</div></div></div>
+            <div class="accordion-item"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><span>Can I pay off early?</span><i class="bx bx-chevron-down"></i></div><div class="accordion-body"><div class="accordion-body-inner">Yes. You can pay off the remaining balance at any time with no early repayment fees or penalties.</div></div></div>
+          </div>
+        </div>
+
+        <div class="fin-calc">
+          <h3><i class="bx bx-calculator"></i> Monthly Payment Calculator</h3>
+          <label>Motorcycle</label>
+          <select id="finModel">
+            <option value="9850">ARKO Trail L — €9,850</option>
+            <option value="9800">ARKO Urban E — €9,800</option>
+            <option value="11200" selected>ARKO Trail S — €11,200</option>
+            <option value="12700">ARKO Trail XR — €12,700</option>
+            <option value="13800">ARKO Enduro Sport — €13,800</option>
+            <option value="14450">ARKO RVX — €14,450</option>
+            <option value="15200">ARKO Enduro R — €15,200</option>
+            <option value="13900">ARKO Adventure L — €13,900</option>
+            <option value="16750">ARKO Adventure X — €16,750</option>
+            <option value="18900">ARKO RVX Pro — €18,900</option>
+            <option value="21500">ARKO Performance RS — €21,500</option>
+          </select>
+          <label>Down Payment</label>
+          <input type="number" id="finDown" value="0" min="0" step="500">
+          <label>Term (months)</label>
+          <select id="finTerm">
+            <option value="12">12 months</option>
+            <option value="24" selected>24 months</option>
+            <option value="36">36 months</option>
+          </select>
+          <div class="calc-result">
+            <div class="calc-row"><span>Bike Price</span><span id="calcPrice">€11,200</span></div>
+            <div class="calc-row"><span>Down Payment</span><span id="calcDown">€0</span></div>
+            <div class="calc-row"><span>Financed Amount</span><span id="calcFinanced">€11,200</span></div>
+            <div class="calc-row"><span>Interest Rate</span><span>0% APR</span></div>
+            <div class="calc-total"><span>Monthly</span><span id="calcMonthly">€466.67</span></div>
+          </div>
+          <button class="btn-volt btn-block" style="margin-top:20px" onclick="arkoToast('Application started (demo)')"><i class="bx bx-file-blank"></i>Start Application</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    function calcFin() {
+      var price = parseInt(document.getElementById('finModel').value);
+      var down = parseInt(document.getElementById('finDown').value) || 0;
+      var term = parseInt(document.getElementById('finTerm').value);
+      if (down > price) down = price;
+      var financed = price - down;
+      var monthly = Math.round(financed / term);
+      document.getElementById('calcPrice').textContent = formatPrice(price);
+      document.getElementById('calcDown').textContent = formatPrice(down);
+      document.getElementById('calcFinanced').textContent = formatPrice(financed);
+      document.getElementById('calcMonthly').textContent = formatPrice(monthly);
+    }
+    document.getElementById('finModel').addEventListener('change', calcFin);
+    document.getElementById('finDown').addEventListener('input', calcFin);
+    document.getElementById('finTerm').addEventListener('change', calcFin);
+    calcFin();
+  </script>
+</body>
+</html>

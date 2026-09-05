@@ -1,598 +1,394 @@
-/* ============================================================
-   ARKO — main.js
-   Combined interaction layer extracted from index.html.
-============================================================ */
-
-/* ---------- IMAGE MODULE (js/images.js) ---------- */
 /* ===========================================================
-   IMAGE MODULE  (js/images.js)
-   source.unsplash.com (the old random-keyword redirect) has been
-   permanently shut down, so it can no longer resolve any image —
-   every img[data-q] was silently falling back to the placeholder
-   SVG. Fixed by mapping each data-q keyword to a specific,
-   verified Unsplash CDN asset (images.unsplash.com/photo-<id>),
-   which is a stable, key-free hotlink Unsplash still serves.
-   To swap in official campaign photography later, just replace
-   the id string on the right — the data-q keys/markup don't change.
+   ARKO — MAIN SHARED JS
+   Injects header/footer, handles nav, toasts, GSAP reveals,
+   product card rendering, and shared interactions.
 =========================================================== */
-(function () {
-  // key: data-q keyword -> Unsplash CDN path (credit: photographer, unsplash.com/license)
-  var MEDIA = {
-    "enduro motorcycle dirt trail forest": "photo-1582092722992-b2f960bafbfb", // Jeremy Bishop
-    "motocross rider mud action": "photo-1606497058128-19b758a3dd88", // Alina Rubo
-    "electric dirt bike studio yellow": "photo-1597479434905-db73b8789725", // Robin Thunholm
-    "electric motorcycle battery closeup": "photo-1525012758503-e9e7c93032b5", // Taras Chernus
-    "motorcycle forest silence mist": "photo-1562732401-e7768620c4c9", // Josiah Ness
-    "motorcycle mechanic garage minimal": "photo-1525013066836-c6090f0ad9d8", // Taras Chernus
-    "dirt bike wheelie action dust": "photo-1502163736820-9bfa4575afcf", // Mohammad Faruque
-    "mountain trail motorcycle distance": "photo-1505807514643-8521e260c67e", // Simon Moog
-    "enduro rider rocky terrain": "photo-1585210256590-fc52fd1e8348", // Davide Zanotti
-    "motorcycle forest trees light": "photo-1692317799913-8908255e6f6a", // Jasper Garratt
-    "dirt bike jump forest action": "photo-1517258307935-9764dad5d7de", // Darren Nunis
-    "off road motorcycle rocky path": "photo-1605121476668-ae388fa8fe27", // Tucker Scott
-    "motorcycle riding forest road trail wide":
-      "photo-1435244837924-21c508f9db25", // Gabriel Sanchez
-    "electric dirt bike front studio": "photo-1660337294765-2a20770826aa", // Trent Haaland
-    "dirt bike side profile studio": "photo-1542550546-88afdd84b64f", // Andraz Lazic
-    "motorcycle rider action forest": "photo-1606497058128-19b758a3dd88", // Alina Rubo
-    "dirt bike mud splash action": "flagged/photo-1566353820556-a53008aa8392", // Lital Levy
-    "motorcycle suspension closeup detail": "photo-1525013066836-c6090f0ad9d8", // Taras Chernus
-    "electric motorcycle wheel closeup": "photo-1505807514643-8521e260c67e", // Simon Moog
-    "motorcycle sunset silhouette trail": "photo-1615572766543-06c21416eb05", // Mert Ceyhan
-  };
 
-  function placeholderSVG(w, h) {
-    var svg =
-      '<svg xmlns="http://www.w3.org/2000/svg" width="' +
-      w +
-      '" height="' +
-      h +
-      '" viewBox="0 0 ' +
-      w +
-      " " +
-      h +
-      '">' +
-      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-      '<stop offset="0" stop-color="#1c1c1c"/><stop offset="1" stop-color="#0b0b0b"/></linearGradient></defs>' +
-      '<rect width="100%" height="100%" fill="url(#g)"/>' +
-      '<g stroke="#2a2a2a" stroke-width="1" fill="none">' +
-      '<path d="M0,' +
-      h * 0.7 +
-      " Q " +
-      w * 0.3 +
-      "," +
-      h * 0.5 +
-      " " +
-      w +
-      "," +
-      h * 0.65 +
-      '"/>' +
-      '<path d="M0,' +
-      h * 0.82 +
-      " Q " +
-      w * 0.4 +
-      "," +
-      h * 0.6 +
-      " " +
-      w +
-      "," +
-      h * 0.8 +
-      '"/>' +
-      "</g>" +
-      '<circle cx="' +
-      w / 2 +
-      '" cy="' +
-      h / 2 +
-      '" r="3" fill="#F2E900"/>' +
-      "</svg>";
-    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+/* ---- HEADER ---- */
+function arkoHeader(active) {
+  return `
+  <nav class="nav" id="arkoNav">
+    <a href="/index.html" class="nav-logo"><span class="dot"></span>ARKO</a>
+    <div class="nav-links">
+      <a href="/index.html" class="${active==='home'?'active':''}">Home</a>
+      <div class="nav-mega-wrap">
+        <span class="nav-link ${active==='shop'?'active':''}">Motorcycles <i class='bx bx-chevron-down'></i></span>
+        <div class="nav-mega">
+          <div>
+            <h6>By Category</h6>
+            <ul>
+              <li><a href="/shop.html?category=Enduro">Enduro</a></li>
+              <li><a href="/shop.html?category=Trail">Trail</a></li>
+              <li><a href="/shop.html?category=Adventure">Adventure</a></li>
+              <li><a href="/shop.html?category=Performance">Performance</a></li>
+              <li><a href="/shop.html">View All</a></li>
+            </ul>
+          </div>
+          <div>
+            <h6>Featured</h6>
+            <ul>
+              <li><a href="/product.html?id=rvx">ARKO RVX</a></li>
+              <li><a href="/product.html?id=rvx-pro">ARKO RVX Pro</a></li>
+              <li><a href="/product.html?id=performance-rs">Performance RS</a></li>
+              <li><a href="/configurator.html">Build Your Own</a></li>
+            </ul>
+          </div>
+          <div>
+            <h6>Tools</h6>
+            <ul>
+              <li><a href="/compare.html">Compare Models</a></li>
+              <li><a href="/test-ride.html">Book a Test Ride</a></li>
+              <li><a href="/dealers.html">Find a Dealer</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <a href="/accessories.html" class="${active==='accessories'?'active':''}">Accessories</a>
+      <a href="/configurator.html" class="${active==='configurator'?'active':''}">Configurator</a>
+      <a href="/dealers.html" class="${active==='dealers'?'active':''}">Dealers</a>
+      <a href="/support.html" class="${active==='support'?'active':''}">Support</a>
+    </div>
+    <div class="nav-right">
+      <a href="/search.html" class="icon-link" aria-label="Search"><i class='bx bx-search'></i></a>
+      <a href="/account.html" class="icon-link" aria-label="Account"><i class='bx bx-user'></i></a>
+      <a href="/wishlist.html" class="icon-link" aria-label="Wishlist"><i class='bx bx-heart'></i><span class="badge" data-wish-count style="display:none">0</span></a>
+      <a href="/compare.html" class="icon-link" aria-label="Compare"><i class='bx bx-git-compare'></i><span class="badge" data-compare-count style="display:none">0</span></a>
+      <a href="/cart.html" class="icon-link cart-link" aria-label="Cart"><i class='bx bx-cart'></i><span class="badge" data-cart-count style="display:none">0</span></a>
+      <a href="/configurator.html" class="nav-cta"><i class='bx bx-plus-medical'></i>Build</a>
+      <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/index.html">Home</a>
+    <a href="/shop.html">Motorcycles</a>
+    <a href="/accessories.html">Accessories</a>
+    <a href="/configurator.html">Configurator</a>
+    <a href="/financing.html">Financing</a>
+    <a href="/compare.html">Compare</a>
+    <a href="/test-ride.html">Test Ride</a>
+    <a href="/dealers.html">Dealers</a>
+    <a href="/about.html">About</a>
+    <a href="/stories.html">Stories</a>
+    <a href="/support.html">Support</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/account.html">Account</a>
+    <div class="mm-foot">
+      <a href="/cart.html" class="btn-volt btn-sm">Cart</a>
+      <a href="/wishlist.html" class="btn-ghost btn-sm">Wishlist</a>
+    </div>
+  </div>
+  `;
+}
+
+/* ---- FOOTER ---- */
+function arkoFooter() {
+  return `
+  <footer class="footer">
+    <div class="container-x">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/index.html" class="nav-logo"><span class="dot"></span>ARKO</a>
+          <p>Electric motorcycles built for terrain that doesn't forgive. Designed and assembled in Europe.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
+            <a href="#" aria-label="YouTube"><i class='bx bxl-youtube'></i></a>
+            <a href="#" aria-label="Facebook"><i class='bx bxl-facebook'></i></a>
+            <a href="#" aria-label="X"><i class='bx bxl-twitter'></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h5>Motorcycles</h5>
+          <ul>
+            <li><a href="/shop.html?category=Enduro">Enduro</a></li>
+            <li><a href="/shop.html?category=Trail">Trail</a></li>
+            <li><a href="/shop.html?category=Adventure">Adventure</a></li>
+            <li><a href="/shop.html?category=Performance">Performance</a></li>
+            <li><a href="/configurator.html">Configurator</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Shop</h5>
+          <ul>
+            <li><a href="/accessories.html">Accessories</a></li>
+            <li><a href="/accessories.html?category=Riding Gear">Riding Gear</a></li>
+            <li><a href="/accessories.html?category=Chargers">Chargers</a></li>
+            <li><a href="/accessories.html?category=Parts">Parts</a></li>
+            <li><a href="/financing.html">Financing</a></li>
+            <li><a href="/insurance.html">Insurance</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/stories.html">Stories</a></li>
+            <li><a href="/dealers.html">Find a Dealer</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/service.html">Book a Service</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Newsletter</h5>
+          <p style="color:#8c8c8c;font-size:.9rem;margin-bottom:14px">Get product updates and early access drops.</p>
+          <form class="newsletter-form" onsubmit="arkoToast('Subscribed!','success');return false">
+            <input type="email" placeholder="your@email.com" required>
+            <button type="submit"><i class='bx bx-right-arrow-alt'></i></button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 ARKO Motors. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="/privacy.html">Privacy</a>
+          <a href="/terms.html">Terms</a>
+          <a href="/contact.html">Contact</a>
+          <a href="/login.html">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  `;
+}
+
+/* ---- TOAST ---- */
+function arkoToast(message, type) {
+  type = type || 'default';
+  var container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
   }
-  function resolve(img) {
-    var q = img.getAttribute("data-q");
-    if (!q) return;
-    var parts = q.split(",");
-    var query = parts[0],
-      w = parts[1] || 1200,
-      h = parts[2] || 900;
-    var id = MEDIA[query];
-    img.src = id
-      ? "https://images.unsplash.com/" +
-        id +
-        "?auto=format&fit=crop&q=80&w=" +
-        w +
-        "&h=" +
-        h
-      : placeholderSVG(w, h);
-    img.loading = img.loading || "lazy";
-    img.onerror = function () {
-      img.onerror = null;
-      img.src = placeholderSVG(w, h);
-    };
+  var icon = 'bx-check';
+  if (type === 'success') icon = 'bx-check-circle';
+  if (type === 'error') icon = 'bx-x-circle';
+  var toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.innerHTML = '<i class="bx ' + icon + '"></i><span>' + message + '</span>';
+  container.appendChild(toast);
+  requestAnimationFrame(function () { toast.classList.add('show'); });
+  setTimeout(function () {
+    toast.classList.remove('show');
+    setTimeout(function () { toast.remove(); }, 400);
+  }, 3000);
+}
+
+/* ---- STAR RATING HTML ---- */
+function starRating(rating, size) {
+  size = size || '.85rem';
+  var html = '<span class="stars" style="font-size:' + size + '">';
+  for (var i = 1; i <= 5; i++) {
+    if (i <= Math.round(rating)) html += '<i class="bx bxs-star filled"></i>';
+    else html += '<i class="bx bx-star empty"></i>';
   }
-  document.querySelectorAll("img[data-q]").forEach(resolve);
-  var heroImg = document.getElementById("heroImg");
-  if (heroImg) {
-    heroImg.loading = "eager";
+  html += '</span>';
+  return html;
+}
+
+/* ---- PRODUCT CARD HTML ---- */
+function productCardHTML(product) {
+  var img = ARKO_IMG.search(product.image);
+  var badge = '';
+  if (product.badge) {
+    var badgeClass = '';
+    if (product.badge === 'Sale') badgeClass = 'sale';
+    if (product.badge === 'New' || product.badge === 'Limited') badgeClass = 'dark';
+    badge = '<span class="product-card-badge ' + badgeClass + '">' + product.badge + '</span>';
   }
+  var oldPrice = product.oldPrice ? '<span class="old">' + formatPrice(product.oldPrice) + '</span>' : '';
+  var colors = (product.colors || []).slice(0, 4).map(function (c) {
+    return '<span class="swatch" style="background:' + c.hex + '" title="' + c.name + '"></span>';
+  }).join('');
+  var specs = product.specs;
+  var specHTML = '';
+  if (specs.range) specHTML += '<span><i class="bx bx-battery-charging"></i>' + specs.range + '</span>';
+  if (specs.power) specHTML += '<span><i class="bx bx-bolt"></i>' + specs.power + '</span>';
+  if (specs.weight) specHTML += '<span><i class="bx bx-weight"></i>' + specs.weight + '</span>';
+  if (specs.topSpeed) specHTML += '<span><i class="bx bx-tachometer"></i>' + specs.topSpeed + '</span>';
 
-  /* Exposed so pages that inject markup at runtime (product cards,
-     quick view, cart drawer, compare tray, etc.) can resolve any new
-     img[data-q] elements without duplicating the resolver logic. */
-  window.ARKOImages = {
-    resolveAll: function (root) {
-      (root || document).querySelectorAll("img[data-q]").forEach(resolve);
-    },
-  };
-})();
+  var wishActive = ARKO_STORE.inWishlist(product.id) ? 'active' : '';
+  var compActive = ARKO_STORE.inCompare(product.id) ? 'active' : '';
 
-/* ---------- MAIN (js/main.js) — nav, reveal, counters, battery scrub ---------- */
-/* ===========================================================
-   MAIN  (js/main.js)
-   Nav, mobile menu, hero timeline, reveals, counters, battery.
-=========================================================== */
-(function () {
-  gsap.registerPlugin(ScrollTrigger);
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return `
+  <div class="product-card" data-product-id="${product.id}" onclick="window.location.href='/product.html?id=${product.id}'">
+    <div class="product-card-media">
+      ${badge}
+      <div class="product-card-actions">
+        <button class="pc-action-btn ${wishActive}" onclick="event.stopPropagation();toggleWishlistUI(this,'${product.id}')" aria-label="Wishlist"><i class='bx bx-heart'></i></button>
+        <button class="pc-action-btn ${compActive}" onclick="event.stopPropagation();toggleCompareUI(this,'${product.id}')" aria-label="Compare"><i class='bx bx-git-compare'></i></button>
+        <button class="pc-action-btn" onclick="event.stopPropagation();quickView('${product.id}')" aria-label="Quick view"><i class='bx bx-show'></i></button>
+      </div>
+      <img src="${img}" alt="${product.name}" loading="lazy" />
+    </div>
+    <div class="product-card-body">
+      <div class="product-card-cat">${product.category}</div>
+      <div class="product-card-name">${product.name}</div>
+      <div class="product-card-rating">${starRating(product.rating)}<span class="count">(${product.reviewCount})</span></div>
+      <div class="product-card-specs">${specHTML}</div>
+      ${colors ? '<div class="product-card-colors">' + colors + '</div>' : ''}
+      <div class="product-card-availability ${product.availability}">${product.availability === 'in-stock' ? 'In Stock' : product.availability === 'pre-order' ? 'Pre-Order' : 'Out of Stock'}</div>
+      <div class="product-card-footer">
+        <div class="product-card-price">${formatPrice(product.price)}${oldPrice}</div>
+      </div>
+      <div class="product-card-cta">
+        <button class="btn-volt btn-sm" onclick="event.stopPropagation();arkoAddToCart('${product.id}')"><i class='bx bx-cart'></i>Add to Cart</button>
+        <a href="/product.html?id=${product.id}" class="btn-outline btn-sm" onclick="event.stopPropagation()">View</a>
+      </div>
+    </div>
+  </div>`;
+}
 
-  /* ---- Nav scroll state ---- */
-  var nav = document.getElementById("siteNav");
-  ScrollTrigger.create({
-    start: "top -80",
-    end: 99999,
-    toggleClass: { targets: nav, className: "is-scrolled" },
-  });
-
-  /* ---- Mobile menu ---- */
-  var burger = document.getElementById("burgerBtn");
-  var menu = document.getElementById("mobileMenu");
-  burger.addEventListener("click", function () {
-    var open = menu.classList.toggle("is-open");
-    burger.setAttribute("aria-expanded", open ? "true" : "false");
-    document.body.style.overflow = open ? "hidden" : "";
-  });
-  menu.querySelectorAll("a").forEach(function (a) {
-    a.addEventListener("click", function () {
-      menu.classList.remove("is-open");
-      document.body.style.overflow = "";
-    });
-  });
-
-  /* ---- Split hero title into per-letter reveal (line based) ---- */
-  document.querySelectorAll(".hero-title .line span").forEach(function (el) {});
-
-  /* ---- Page load timeline ---- */
-  var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-  tl.to(".hero-title .line span", { yPercent: 0, duration: 1.1, stagger: 0.12 })
-    .to(".hero-kicker", { opacity: 1, y: 0, duration: 0.7 }, "-=.9")
-    .to(".hero-sub", { opacity: 1, y: 0, duration: 0.7 }, "-=.7")
-    .to(".hero-actions", { opacity: 1, y: 0, duration: 0.7 }, "-=.6")
-    .to(".hero-media img", { scale: 1, duration: 2.4, ease: "power2.out" }, 0);
-
-  gsap.set([".hero-kicker", ".hero-sub", ".hero-actions"], {
-    opacity: 0,
-    y: 20,
-  });
-
-  /* ---- Generic reveal on scroll ---- */
-  document.querySelectorAll("[data-reveal]").forEach(function (el) {
-    if (el.closest(".hero")) return;
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: 36 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 88%" },
-      },
-    );
-  });
-  document.querySelectorAll("[data-reveal-img] img").forEach(function (img) {
-    gsap.fromTo(
-      img,
-      { scale: 1.18 },
-      {
-        scale: 1,
-        duration: 1.6,
-        ease: "power2.out",
-        scrollTrigger: { trigger: img, start: "top 90%" },
-      },
-    );
-  });
-
-  /* ---- Counters ---- */
-  document.querySelectorAll(".counter").forEach(function (el) {
-    var target = parseFloat(el.getAttribute("data-target"));
-    ScrollTrigger.create({
-      trigger: el,
-      start: "top 90%",
-      once: true,
-      onEnter: function () {
-        var obj = { v: 0 };
-        gsap.to(obj, {
-          v: target,
-          duration: 1.4,
-          ease: "power2.out",
-          onUpdate: function () {
-            el.textContent = Math.round(obj.v);
-          },
-        });
-      },
-    });
-  });
-
-  /* ---- Parallax on section media ---- */
-  gsap.utils.toArray(".intro-media, .model-media").forEach(function (el) {
-    if (reduced) return;
-    gsap.to(el.querySelector("img"), {
-      yPercent: 8,
-      ease: "none",
-      scrollTrigger: {
-        trigger: el,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-  });
-
-  /* ---- Battery swap scrubbed sequence ---- */
-  var batterySection = document.getElementById("battery");
-  if (batterySection) {
-    var bTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: batterySection,
-        start: "top top",
-        end: "+=140%",
-        scrub: 1,
-        pin: true,
-      },
-    });
-    bTl
-      .to("#batteryOld", {
-        yPercent: 0,
-        top: "56%",
-        y: "-160%",
-        opacity: 1,
-        duration: 0.3,
-      })
-      .to("#batteryOld", { y: "40%", opacity: 0.2, duration: 0.35 })
-      .to("#batteryGlow", { opacity: 1, duration: 0.2 }, "-=.15")
-      .to(
-        "#batteryNew",
-        { y: "0%", top: "56%", opacity: 1, duration: 0.35 },
-        "-=.1",
-      )
-      .to("#batteryGlow", { opacity: 0, duration: 0.3 })
-      .to("#batteryProgress", { width: "100%", duration: 1 }, 0);
+/* ---- WISHLIST / COMPARE UI TOGGLES ---- */
+function toggleWishlistUI(btn, id) {
+  var added = ARKO_STORE.toggleWishlist(id);
+  if (added) {
+    btn.classList.add('active');
+    arkoToast('Added to wishlist', 'success');
+  } else {
+    btn.classList.remove('active');
+    arkoToast('Removed from wishlist');
   }
+}
 
-  /* ---- Cinematic image micro-scale on enter ---- */
-  gsap.utils
-    .toArray(".cine-media img, .final-media img")
-    .forEach(function (img) {
-      gsap.fromTo(
-        img,
-        { scale: 1.08 },
-        {
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: img.closest("section"),
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-    });
-
-  /* ---- Cine play/sound toggle (decorative, no real video asset) ---- */
-  var playBtn = document.getElementById("cinePlay");
-  var soundBtn = document.getElementById("cineSound");
-  if (playBtn) {
-    playBtn.addEventListener("click", function () {
-      var icon = playBtn.querySelector("i");
-      var playing = icon.classList.contains("bx-pause");
-      icon.classList.toggle("bx-play", playing);
-      icon.classList.toggle("bx-pause", !playing);
-    });
+function toggleCompareUI(btn, id) {
+  var result = ARKO_STORE.toggleCompare(id);
+  if (result === false) {
+    arkoToast('Compare list is full (max 4)', 'error');
+    return;
   }
-  if (soundBtn) {
-    soundBtn.addEventListener("click", function () {
-      var icon = soundBtn.querySelector("i");
-      var on = icon.classList.contains("bx-volume-full");
-      icon.classList.toggle("bx-volume-full", !on);
-      icon.classList.toggle("bx-volume-mute", on);
-    });
+  if (ARKO_STORE.inCompare(id)) {
+    btn.classList.add('active');
+    arkoToast('Added to compare', 'success');
+  } else {
+    btn.classList.remove('active');
+    arkoToast('Removed from compare');
   }
+}
 
-  /* ---- Newsletter (no backend — acknowledge locally) ---- */
-  var form = document.getElementById("newsletterForm");
-  if (form) {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var btn = form.querySelector("button");
-      var icon = btn.querySelector("i");
-      icon.className = "bx bx-check";
-      form.querySelector("input").value = "";
-      setTimeout(function () {
-        icon.className = "bx bx-right-arrow-alt";
-      }, 2200);
-    });
-  }
+/* ---- ADD TO CART ---- */
+function arkoAddToCart(id, qty, options) {
+  ARKO_STORE.addToCart(id, qty, options);
+  arkoToast('Added to cart', 'success');
+}
 
-  /* ---- Smooth in-page anchor scroll ---- */
-  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-    a.addEventListener("click", function (e) {
-      var id = a.getAttribute("href");
-      if (id.length < 2) return;
-      var target = document.querySelector(id);
-      if (target) {
-        e.preventDefault();
-        gsap.to(window, {
-          duration: 1.1,
-          ease: "power3.inOut",
-          scrollTo: { y: target, offsetY: 70 },
-        });
-      }
-    });
-  });
-})();
-
-/* ---------- HORIZONTAL SCROLL FEATURES ---------- */
-/* ===========================================================
-   HORIZONTAL SCROLL FEATURES  (js/carousel.js — feature track)
-=========================================================== */
-(function () {
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var track = document.getElementById("hTrack");
-  var pin = document.getElementById("hScrollPin");
-  var dots = document.querySelectorAll("#hProgress span");
-  if (!track || !pin) return;
-
-  gsap.matchMedia().add("(min-width: 861px)", function () {
-    var panels = track.querySelectorAll(".h-panel");
-    var total = panels.length;
-    var getDistance = function () {
-      return track.scrollWidth - window.innerWidth;
-    };
-
-    var tween = gsap.to(track, {
-      x: function () {
-        return -getDistance();
-      },
-      ease: "none",
-      scrollTrigger: {
-        trigger: pin,
-        start: "top top",
-        end: function () {
-          return "+=" + getDistance() * 1.1;
-        },
-        scrub: 1,
-        pin: true,
-        invalidateOnRefresh: true,
-        onUpdate: function (self) {
-          var i = Math.min(total - 1, Math.floor(self.progress * total));
-          dots.forEach(function (d, idx) {
-            d.classList.toggle("active", idx <= i);
-          });
-        },
-      },
-    });
-    return function () {
-      tween.kill();
-    };
-  });
-
-  gsap.matchMedia().add("(max-width: 860px)", function () {
-    // On mobile the track becomes a natural horizontal swipe strip.
-    track.style.overflowX = "auto";
-    track.style.scrollSnapType = "x mandatory";
-    pin.style.height = "auto";
-    track.querySelectorAll(".h-panel").forEach(function (p) {
-      p.style.scrollSnapAlign = "start";
-      p.style.height = "80vh";
-    });
-  });
-})();
-
-/* ---------- TRAIL MAP ---------- */
-/* ===========================================================
-   TRAIL MAP  (js/map.js)
-=========================================================== */
-(function () {
-  var path = document.getElementById("routePath");
-  var marker = document.getElementById("routeMarker");
-  var pin = document.getElementById("mapPin");
-  var points = document.querySelectorAll(".route-point-group");
-  var stageEl = document.getElementById("mcStage");
-  var textEl = document.getElementById("mcText");
-  if (!path || !marker || !pin) return;
-
-  var len = path.getTotalLength();
-  path.style.strokeDasharray = len;
-  path.style.strokeDashoffset = len;
-
-  var stops = [
-    {
-      label: "Start",
-      text: "Battery charged, tyres checked. The trail hasn't been ridden yet — that's the best part.",
-    },
-    {
-      label: "Forest",
-      text: "Tight single-track and low light. Instant torque makes the tricky lines feel simple.",
-    },
-    {
-      label: "Valley",
-      text: "Open ground, longer sightlines. Time to open the throttle and let the RVX stretch out.",
-    },
-    {
-      label: "Ridge",
-      text: "Loose rock and elevation. Long-travel suspension keeps both wheels talking to the ground.",
-    },
-    {
-      label: "Summit",
-      text: "Silence, and a view that was worth every switchback. Swap the battery, ride back down.",
-    },
-  ];
-  var pointPositions = [];
-  points.forEach(function (g) {
-    var c = g.querySelector("circle");
-    pointPositions.push({
-      x: parseFloat(c.getAttribute("cx")),
-      y: parseFloat(c.getAttribute("cy")),
-      el: g,
-    });
-  });
-
-  function nearestStopIndex(progress) {
-    var target = progress * len;
-    var best = 0,
-      bestDiff = Infinity;
-    pointPositions.forEach(function (p, i) {
-      // approximate stop position along path by sampling
-      var samplePt = path.getPointAtLength(
-        (i / (pointPositions.length - 1)) * len,
-      );
-      var diff = Math.abs(samplePt.x - p.x) + Math.abs(samplePt.y - p.y);
-    });
-    return Math.min(
-      stops.length - 1,
-      Math.round(progress * (stops.length - 1)),
-    );
-  }
-
-  ScrollTrigger.create({
-    trigger: pin,
-    start: "top top",
-    end: "+=220%",
-    scrub: 1,
-    pin: true,
-    invalidateOnRefresh: true,
-    onUpdate: function (self) {
-      var progress = self.progress;
-      var drawLen = len * progress;
-      path.style.strokeDashoffset = len - drawLen;
-      var pt = path.getPointAtLength(drawLen);
-      marker.setAttribute("cx", pt.x);
-      marker.setAttribute("cy", pt.y);
-
-      var idx = nearestStopIndex(progress);
-      pointPositions.forEach(function (p, i) {
-        var active =
-          i <= Math.floor(progress * (pointPositions.length - 1) + 0.001);
-        p.el
-          .querySelector(".route-point")
-          .classList.toggle("active", i === idx || (active && i === idx));
-        p.el.querySelector(".route-label").classList.toggle("active", i <= idx);
-      });
-      var stop = stops[idx];
-      if (stop && stageEl.textContent !== stop.label) {
-        stageEl.textContent = stop.label;
-        textEl.textContent = stop.text;
-      }
-    },
-  });
-})();
-
-/* ---------- PRODUCT CAROUSEL ---------- */
-/* ===========================================================
-   PRODUCT CAROUSEL  (js/carousel.js — image carousel)
-=========================================================== */
-(function () {
-  var slides = Array.from(document.querySelectorAll("#carouselStage .c-slide"));
-  var dotsWrap = document.getElementById("carouselDots");
-  var curEl = document.getElementById("cCur");
-  var totalEl = document.getElementById("cTotal");
-  var prevBtn = document.getElementById("cPrev");
-  var nextBtn = document.getElementById("cNext");
-  if (!slides.length) return;
-
-  var index = 0;
-  totalEl.textContent = String(slides.length).padStart(2, "0");
-
-  slides.forEach(function (_, i) {
-    var b = document.createElement("button");
-    b.className = "c-dot" + (i === 0 ? " is-active" : "");
-    b.setAttribute("aria-label", "Go to image " + (i + 1));
-    b.addEventListener("click", function () {
-      goTo(i);
-    });
-    dotsWrap.appendChild(b);
-  });
-  var dots = Array.from(dotsWrap.children);
-
-  function goTo(i) {
-    var next = (i + slides.length) % slides.length;
-    if (next === index) return;
-    var curSlide = slides[index],
-      nextSlide = slides[next];
-    gsap
-      .timeline()
-      .to(
-        curSlide.querySelector("img"),
-        { scale: 1.06, duration: 0.5, ease: "power2.in" },
-        0,
-      )
-      .set(curSlide, { className: "c-slide" })
-      .set(nextSlide, { className: "c-slide is-active" })
-      .fromTo(
-        nextSlide.querySelector("img"),
-        { scale: 1.12, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.7, ease: "power3.out" },
-        0,
-      )
-      .fromTo(nextSlide, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0);
-    index = next;
-    curEl.textContent = String(index + 1).padStart(2, "0");
-    dots.forEach(function (d, di) {
-      d.classList.toggle("is-active", di === index);
-    });
-  }
-
-  prevBtn.addEventListener("click", function () {
-    goTo(index - 1);
-  });
-  nextBtn.addEventListener("click", function () {
-    goTo(index + 1);
-  });
-  document.addEventListener("keydown", function (e) {
-    var stage = document.getElementById("carouselStage");
-    var rect = stage.getBoundingClientRect();
-    var visible = rect.top < window.innerHeight && rect.bottom > 0;
-    if (!visible) return;
-    if (e.key === "ArrowRight") goTo(index + 1);
-    if (e.key === "ArrowLeft") goTo(index - 1);
-  });
-})();
-
-/* ---------- ScrollToPlugin substitute ---------- */
-/* ScrollToPlugin substitute (avoid extra CDN dependency) */
-if (window.gsap && !gsap.plugins?.scrollTo) {
-  gsap.registerPlugin({
-    name: "scrollTo",
-    init: function () {},
+/* ---- QUICK VIEW MODAL ---- */
+function quickView(id) {
+  var p = getProductById(id);
+  if (!p) return;
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <button class="modal-close" onclick="this.closest('.modal-overlay').remove()"><i class='bx bx-x'></i></button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="aspect-ratio:1;background:var(--charcoal)"><img src="${ARKO_IMG.search(p.image)}" style="width:100%;height:100%;object-fit:cover" alt="${p.name}" /></div>
+        <div style="padding:36px">
+          <div class="product-card-cat">${p.category}</div>
+          <h2 style="font-size:1.8rem;font-weight:800;margin:8px 0">${p.name}</h2>
+          <div style="margin-bottom:14px">${starRating(p.rating)} <span style="font-size:.85rem;color:#999">(${p.reviewCount} reviews)</span></div>
+          <p style="color:#666;line-height:1.6;margin-bottom:20px">${p.description}</p>
+          <div style="font-size:2rem;font-weight:800;margin-bottom:20px">${formatPrice(p.price)}</div>
+          <div style="display:flex;gap:10px;margin-bottom:20px">
+            ${p.specs.range ? '<span class="chip"><i class="bx bx-battery-charging"></i>' + p.specs.range + '</span>' : ''}
+            ${p.specs.power ? '<span class="chip"><i class="bx bx-bolt"></i>' + p.specs.power + '</span>' : ''}
+            ${p.specs.weight ? '<span class="chip"><i class="bx bx-weight"></i>' + p.specs.weight + '</span>' : ''}
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-volt" onclick="arkoAddToCart('${p.id}');this.closest('.modal-overlay').remove()"><i class='bx bx-cart'></i>Add to Cart</button>
+            <a href="/product.html?id=${p.id}" class="btn-outline">Full Details</a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) overlay.remove();
   });
 }
 
-/* ---------- scrollTo shim ---------- */
-/* Lightweight scrollTo shim used by main.js anchor handler */
-(function () {
-  if (!window.gsap) return;
-  var orig = gsap.to;
-  gsap.to = function (target, vars) {
-    if (vars && vars.scrollTo) {
-      var y = vars.scrollTo.y;
-      var offset = vars.scrollTo.offsetY || 0;
-      var el = typeof y === "string" ? document.querySelector(y) : y;
-      var top = el
-        ? el.getBoundingClientRect().top + window.scrollY - offset
-        : 0;
-      window.scrollTo({ top: top, behavior: "smooth" });
-      return { kill: function () {} };
+/* ---- INIT ---- */
+function arkoInit(active) {
+  // Inject header
+  var headerSlot = document.querySelector('[data-header]');
+  if (headerSlot) headerSlot.innerHTML = arkoHeader(active);
+
+  // Inject footer
+  var footerSlot = document.querySelector('[data-footer]');
+  if (footerSlot) footerSlot.innerHTML = arkoFooter();
+
+  // Mobile menu
+  var burger = document.getElementById('navBurger');
+  var menu = document.getElementById('mobileMenu');
+  if (burger && menu) {
+    burger.addEventListener('click', function () {
+      menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open');
+      if (burger.classList.contains('is-open')) {
+        burger.children[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        burger.children[1].style.opacity = '0';
+        burger.children[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+      } else {
+        burger.children[0].style.transform = '';
+        burger.children[1].style.opacity = '';
+        burger.children[2].style.transform = '';
+      }
+    });
+  }
+
+  // Nav scroll
+  var nav = document.getElementById('arkoNav');
+  if (nav) {
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 60) nav.style.padding = '10px clamp(20px, 4vw, 56px)';
+      else nav.style.padding = '';
+    });
+  }
+
+  // Update badges
+  ARKO_STORE.updateBadges();
+
+  // GSAP reveals
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set('[data-reveal]', { opacity: 1, y: 0 });
+      gsap.set('[data-reveal-img] img', { scale: 1 });
+      gsap.set('.split-line > span', { y: 0 });
+    } else {
+      gsap.utils.toArray('[data-reveal]').forEach(function (el) {
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%' }
+        });
+      });
+      gsap.utils.toArray('[data-reveal-img]').forEach(function (el) {
+        var img = el.querySelector('img');
+        if (img) {
+          gsap.to(img, {
+            scale: 1, duration: 1.4, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 85%' }
+          });
+        }
+      });
+      gsap.utils.toArray('.split-line').forEach(function (el) {
+        var span = el.querySelector('span');
+        if (span) {
+          gsap.to(span, {
+            y: 0, duration: 1, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 85%' }
+          });
+        }
+      });
     }
-    return orig.apply(gsap, arguments);
-  };
-})();
+  }
+}
+
+/* Auto-init on DOMContentLoaded */
+document.addEventListener('DOMContentLoaded', function () {
+  // If page has data-active attribute, use it
+  var body = document.body;
+  var active = body.getAttribute('data-active') || '';
+  arkoInit(active);
+});

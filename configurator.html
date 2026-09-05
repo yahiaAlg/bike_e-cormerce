@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurator — Build Your ARKO</title>
+  <meta name="description" content="Build your custom ARKO electric motorcycle. Choose model, color, battery, suspension, wheels, and accessories." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+</head>
+<body data-active="configurator">
+  <div data-header></div>
+
+  <section class="page-header">
+    <div class="container-x">
+      <div class="eyebrow">Build Your Own</div>
+      <h1 class="section-title">Configurator</h1>
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a><span class="sep">/</span>
+        <span>Configurator</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container-x">
+      <div class="configurator">
+        <div>
+          <!-- Step 1: Model -->
+          <div class="config-step">
+            <h3><span class="step-num">1</span>Choose Your Model</h3>
+            <p style="color:#777;font-size:.88rem">Select a base motorcycle to start configuring.</p>
+            <div class="config-options" id="modelOptions"></div>
+          </div>
+
+          <!-- Step 2: Color -->
+          <div class="config-step">
+            <h3><span class="step-num">2</span>Choose Your Color</h3>
+            <p style="color:#777;font-size:.88rem">Pick the color that matches your style.</p>
+            <div class="config-options" id="colorOptions"></div>
+          </div>
+
+          <!-- Step 3: Battery -->
+          <div class="config-step">
+            <h3><span class="step-num">3</span>Battery</h3>
+            <p style="color:#777;font-size:.88rem">More range or hot-swap convenience?</p>
+            <div class="config-options" id="batteryOptions"></div>
+          </div>
+
+          <!-- Step 4: Suspension -->
+          <div class="config-step">
+            <h3><span class="step-num">4</span>Suspension</h3>
+            <p style="color:#777;font-size:.88rem">Tune for your terrain.</p>
+            <div class="config-options" id="suspensionOptions"></div>
+          </div>
+
+          <!-- Step 5: Wheels -->
+          <div class="config-step">
+            <h3><span class="step-num">5</span>Wheels</h3>
+            <p style="color:#777;font-size:.88rem">Spoked, tubeless, or track-ready.</p>
+            <div class="config-options" id="wheelOptions"></div>
+          </div>
+
+          <!-- Step 6: Accessories -->
+          <div class="config-step">
+            <h3><span class="step-num">6</span>Accessories & Packages</h3>
+            <p style="color:#777;font-size:.88rem">Add protection, charging, and gear.</p>
+            <div class="config-options" id="accessoryOptions"></div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div>
+          <div class="config-summary">
+            <h3>Your Build</h3>
+            <div class="config-preview" id="configPreview">
+              <img src="" alt="Preview" id="previewImg" />
+            </div>
+            <div id="summaryItems"></div>
+            <div class="summary-total">
+              <span>Total</span>
+              <span id="summaryTotal">€0</span>
+            </div>
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+              <button class="btn-volt btn-block" onclick="addConfigToCart()"><i class='bx bx-cart'></i>Add to Cart</button>
+              <a href="/checkout.html" class="btn-ghost btn-block" onclick="addConfigAndCheckout(event)">Buy Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div data-footer></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/images.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    var config = { model: null, color: 0, battery: 0, suspension: 0, wheels: 0, accessories: [] };
+    var params = new URLSearchParams(location.search);
+    var presetModel = params.get('model');
+
+    // Step 1: Models
+    document.getElementById('modelOptions').innerHTML = ARKO_DATA.motorcycles.map(function (m) {
+      return '<div class="config-option" data-model="' + m.id + '" onclick="selectModel(\'' + m.id + '\')">' +
+        '<h6>' + m.name + '</h6>' +
+        '<p>' + m.category + ' • ' + m.specs.range + ' • ' + m.specs.power + '</p>' +
+        '<div class="opt-price">' + formatPrice(m.price) + '</div>' +
+        '</div>';
+    }).join('');
+
+    if (presetModel) selectModel(presetModel);
+
+    function selectModel(id) {
+      config.model = id;
+      var m = getMotorcycleById(id);
+      if (!m) return;
+
+      document.querySelectorAll('#modelOptions .config-option').forEach(function (o) {
+        o.classList.toggle('active', o.dataset.model === id);
+      });
+
+      // Update preview
+      document.getElementById('previewImg').src = ARKO_IMG.search(m.image);
+
+      // Step 2: Colors
+      document.getElementById('colorOptions').innerHTML = m.colors.map(function (c, i) {
+        return '<div class="config-option" onclick="selectColor(' + i + ',\'' + c.name + '\',\'' + c.hex + '\')">' +
+          '<div style="width:40px;height:40px;border-radius:50%;background:' + c.hex + ';margin-bottom:8px;border:2px solid #fff;box-shadow:0 0 0 1px var(--line-light)"></div>' +
+          '<h6>' + c.name + '</h6></div>';
+      }).join('');
+      selectColor(0, m.colors[0].name, m.colors[0].hex);
+
+      // Step 3: Battery
+      var batteryVariant = m.variants.find(function (v) { return v.name === 'Battery'; });
+      if (batteryVariant) {
+        document.getElementById('batteryOptions').innerHTML = batteryVariant.options.map(function (opt, i) {
+          var priceMatch = opt.match(/\+€([\d,]+)/);
+          var price = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
+          var cleanName = opt.replace(/\s*\+€[\d,]+/, '');
+          return '<div class="config-option" onclick="selectBattery(' + i + ',\'' + cleanName.replace(/'/g, '') + '\',' + price + ')">' +
+            '<h6>' + cleanName + '</h6><div class="opt-price">' + (price ? '+' + formatPrice(price) : 'Included') + '</div></div>';
+        }).join('');
+      }
+      selectBattery(0, 'Standard', 0);
+
+      // Step 4: Suspension
+      var suspVariant = m.variants.find(function (v) { return v.name === 'Suspension'; });
+      if (suspVariant) {
+        document.getElementById('suspensionOptions').innerHTML = suspVariant.options.map(function (opt, i) {
+          var priceMatch = opt.match(/\+€([\d,]+)/);
+          var price = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
+          var cleanName = opt.replace(/\s*\+€[\d,]+/, '');
+          return '<div class="config-option" onclick="selectSuspension(' + i + ',\'' + cleanName.replace(/'/g, '') + '\',' + price + ')">' +
+            '<h6>' + cleanName + '</h6><div class="opt-price">' + (price ? '+' + formatPrice(price) : 'Included') + '</div></div>';
+        }).join('');
+      }
+      selectSuspension(0, 'Standard', 0);
+
+      // Step 5: Wheels
+      var wheelVariant = m.variants.find(function (v) { return v.name === 'Wheels'; });
+      if (wheelVariant) {
+        document.getElementById('wheelOptions').innerHTML = wheelVariant.options.map(function (opt, i) {
+          var priceMatch = opt.match(/\+€([\d,]+)/);
+          var price = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
+          var cleanName = opt.replace(/\s*\+€[\d,]+/, '');
+          return '<div class="config-option" onclick="selectWheels(' + i + ',\'' + cleanName.replace(/'/g, '') + '\',' + price + ')">' +
+            '<h6>' + cleanName + '</h6><div class="opt-price">' + (price ? '+' + formatPrice(price) : 'Included') + '</div></div>';
+        }).join('');
+      }
+      selectWheels(0, 'Standard', 0);
+
+      // Step 6: Accessories
+      var accIds = m.accessories || [];
+      document.getElementById('accessoryOptions').innerHTML = accIds.map(function (aid) {
+        var a = getAccessoryById(aid);
+        if (!a) return '';
+        return '<div class="config-option" data-acc="' + aid + '" onclick="toggleAccessory(this,\'' + aid + '\',' + a.price + ',\'' + a.name.replace(/'/g, '') + '\')">' +
+          '<h6>' + a.name + '</h6><p>' + a.category + '</p><div class="opt-price">+' + formatPrice(a.price) + '</div></div>';
+      }).join('');
+
+      updateSummary();
+    }
+
+    function selectColor(idx, name, hex) {
+      config.color = idx;
+      document.querySelectorAll('#colorOptions .config-option').forEach(function (o, i) {
+        o.classList.toggle('active', i === idx);
+      });
+      updateSummary();
+    }
+
+    function selectBattery(idx, name, price) {
+      config.battery = { idx: idx, name: name, price: price };
+      document.querySelectorAll('#batteryOptions .config-option').forEach(function (o, i) {
+        o.classList.toggle('active', i === idx);
+      });
+      updateSummary();
+    }
+
+    function selectSuspension(idx, name, price) {
+      config.suspension = { idx: idx, name: name, price: price };
+      document.querySelectorAll('#suspensionOptions .config-option').forEach(function (o, i) {
+        o.classList.toggle('active', i === idx);
+      });
+      updateSummary();
+    }
+
+    function selectWheels(idx, name, price) {
+      config.wheels = { idx: idx, name: name, price: price };
+      document.querySelectorAll('#wheelOptions .config-option').forEach(function (o, i) {
+        o.classList.toggle('active', i === idx);
+      });
+      updateSummary();
+    }
+
+    function toggleAccessory(el, aid, price, name) {
+      el.classList.toggle('active');
+      var existing = config.accessories.findIndex(function (a) { return a.id === aid; });
+      if (existing > -1) {
+        config.accessories.splice(existing, 1);
+      } else {
+        config.accessories.push({ id: aid, name: name, price: price });
+      }
+      updateSummary();
+    }
+
+    function updateSummary() {
+      var m = config.model ? getMotorcycleById(config.model) : null;
+      if (!m) {
+        document.getElementById('summaryItems').innerHTML = '<div class="summary-item"><span>Select a model</span></div>';
+        document.getElementById('summaryTotal').textContent = '€0';
+        return;
+      }
+
+      var items = '<div class="summary-item"><span>Base: ' + m.name + '</span><span>' + formatPrice(m.price) + '</span></div>';
+      if (m.colors) items += '<div class="summary-item"><span>Color: ' + m.colors[config.color].name + '</span><span>Included</span></div>';
+      if (config.battery) items += '<div class="summary-item"><span>Battery: ' + config.battery.name + '</span><span>' + (config.battery.price ? '+' + formatPrice(config.battery.price) : 'Included') + '</span></div>';
+      if (config.suspension) items += '<div class="summary-item"><span>Suspension: ' + config.suspension.name + '</span><span>' + (config.suspension.price ? '+' + formatPrice(config.suspension.price) : 'Included') + '</span></div>';
+      if (config.wheels) items += '<div class="summary-item"><span>Wheels: ' + config.wheels.name + '</span><span>' + (config.wheels.price ? '+' + formatPrice(config.wheels.price) : 'Included') + '</span></div>';
+      config.accessories.forEach(function (a) {
+        items += '<div class="summary-item"><span>Acc: ' + a.name + '</span><span>+' + formatPrice(a.price) + '</span></div>';
+      });
+
+      document.getElementById('summaryItems').innerHTML = items;
+
+      var total = m.price + (config.battery ? config.battery.price : 0) + (config.suspension ? config.suspension.price : 0) + (config.wheels ? config.wheels.price : 0);
+      config.accessories.forEach(function (a) { total += a.price; });
+      document.getElementById('summaryTotal').textContent = formatPrice(total);
+    }
+
+    function addConfigToCart() {
+      if (!config.model) { arkoToast('Select a model first', 'error'); return; }
+      var m = getMotorcycleById(config.model);
+      var upgrades = [];
+      if (config.battery && config.battery.price) upgrades.push({ name: 'Battery: ' + config.battery.name, price: config.battery.price });
+      if (config.suspension && config.suspension.price) upgrades.push({ name: 'Suspension: ' + config.suspension.name, price: config.suspension.price });
+      if (config.wheels && config.wheels.price) upgrades.push({ name: 'Wheels: ' + config.wheels.name, price: config.wheels.price });
+      config.accessories.forEach(function (a) { upgrades.push({ name: 'Accessory: ' + a.name, price: a.price }); });
+      ARKO_STORE.addToCart(config.model, 1, { color: m.colors[config.color].name, upgrades: upgrades });
+      arkoToast('Configuration added to cart', 'success');
+    }
+
+    function addConfigAndCheckout(e) {
+      e.preventDefault();
+      if (!config.model) { arkoToast('Select a model first', 'error'); return; }
+      addConfigToCart();
+      setTimeout(function () { window.location.href = '/checkout.html'; }, 300);
+    }
+  </script>
+</body>
+</html>
