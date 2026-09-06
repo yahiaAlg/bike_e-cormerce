@@ -48,10 +48,10 @@
 
 ARKO is presented as a direct-to-consumer electric motorcycle manufacturer: a European brand selling off-road and street-legal electric motorcycles (Enduro, Trail, Adventure, and Performance categories) alongside riding gear, batteries, chargers, and parts. The platform under specification is the customer-facing website through which prospective and existing riders research models, configure a build, purchase motorcycles and accessories, book test rides and service appointments, find dealers, apply conceptually for financing and insurance, and manage their post-purchase relationship with the brand (orders, garage, wishlist, preferences).
 
-Unlike a typical functional specification written _before_ a system exists, this document is written from a **working frontend build** — a full set of static pages with client-side logic — that already expresses, in detail, how the platform is meant to behave. The purpose of this document is to make that behavior explicit, complete, and unambiguous, so that it can be:
+Unlike a typical functional specification written *before* a system exists, this document is written from a **working frontend build** — a full set of static pages with client-side logic — that already expresses, in detail, how the platform is meant to behave. The purpose of this document is to make that behavior explicit, complete, and unambiguous, so that it can be:
 
 - Validated by product and design stakeholders against original intent.
-- Handed to a backend/platform engineering team as the authoritative description of _what the system must do_, independent of the current client-side implementation.
+- Handed to a backend/platform engineering team as the authoritative description of *what the system must do*, independent of the current client-side implementation.
 - Used by QA to build test plans and acceptance criteria.
 - Used as an onboarding document for anyone joining the project.
 
@@ -66,7 +66,7 @@ This Functional Specification describes:
 - The **content and informational surfaces** (About, Stories, legal pages, support) that support the commerce experience.
 - A **critical review** of the current implementation's consistency and completeness, flagging genuine gaps, bugs, and simplifications that a next implementation phase should resolve.
 
-This document does **not** prescribe a technology stack, database schema, API design, or visual design system. It focuses on _what the platform does and should do functionally_, not on _how it is coded_. Where the current build's technical choices materially affect functional behavior (for example, the fact that the cart lives only in the visitor's browser), this is called out explicitly because it **is** a functional constraint today, not a technical implementation detail to be silently abstracted away.
+This document does **not** prescribe a technology stack, database schema, API design, or visual design system. It focuses on *what the platform does and should do functionally*, not on *how it is coded*. Where the current build's technical choices materially affect functional behavior (for example, the fact that the cart lives only in the visitor's browser), this is called out explicitly because it **is** a functional constraint today, not a technical implementation detail to be silently abstracted away.
 
 ### 1.3 Intended Audience
 
@@ -110,12 +110,12 @@ ARKO's catalog, as currently modeled, consists of two product families:
 
 **Motorcycles (11 models)** spanning four categories:
 
-| Category    | Models                               |
-| ----------- | ------------------------------------ |
-| Enduro      | RVX, RVX Pro, Enduro R, Enduro Sport |
-| Trail       | Trail S, Trail L, Trail XR           |
-| Adventure   | Adventure X, Adventure L             |
-| Performance | Urban E, Performance RS              |
+| Category | Models |
+|---|---|
+| Enduro | RVX, RVX Pro, Enduro R, Enduro Sport |
+| Trail | Trail S, Trail L, Trail XR |
+| Adventure | Adventure X, Adventure L |
+| Performance | Urban E, Performance RS |
 
 Prices range from €9,800 (Urban E) to €21,500 (Performance RS, a limited edition of 200 units). Each model carries a rich set of attributes: category, price (and optional strikethrough "old price" for sale items), star rating and review count, a merchandising badge (Best Seller, New, Sale, Limited), an availability state (in-stock or pre-order), a set of color options with hex swatches, a technical specification block (range, power, weight, top speed, battery capacity, charge time), a marketing description, a bulleted feature list, a set of configurable variant groups (Battery, Suspension, Wheels — each with priced upgrade options), a photo gallery, a list of recommended accessories, a list of related models, and an associated video trailer reference.
 
@@ -129,27 +129,27 @@ It is important to state plainly, for anyone using this document to plan further
 
 - All product, dealer, review, order, and FAQ data is **hardcoded** in a single JavaScript data file. There is no database and no content-management capability — adding, editing, or removing a product today means editing code.
 - The **cart, wishlist, compare list, and recently-viewed list** are stored in the visitor's browser (`localStorage`) and are **not** synced to any account or server. Clearing browser data, switching browsers, or switching devices loses this state entirely, even for a "logged in" user.
-- **Login, registration, checkout, test-ride booking, service booking, and contact forms all simulate success** — there is no real authentication, no real payment processing, and no email is actually sent. Every one of these flows ends in a client-side toast message and/or redirect that _looks_ like a completed transaction but persists nothing beyond the current browser session's local storage.
+- **Login, registration, checkout, test-ride booking, service booking, and contact forms all simulate success** — there is no real authentication, no real payment processing, and no email is actually sent. Every one of these flows ends in a client-side toast message and/or redirect that *looks* like a completed transaction but persists nothing beyond the current browser session's local storage.
 - **Order history, dealer list, and reviews are static demo content** — placing an "order" through checkout does not add anything to the Orders page; the Orders page always shows the same four pre-written demo orders regardless of what a visitor purchases.
 
 This specification describes the **intended functional behavior** implied by this build — i.e., what a production version of this platform should do — while flagging in Chapter 11 exactly where today's implementation is a simulation rather than the real thing.
 
 ### 2.3 Site Map
 
-| Area               | Pages                                                                                |
-| ------------------ | ------------------------------------------------------------------------------------ |
-| Brand & Content    | Home (`index.html`), About (`about.html`), Stories (`stories.html`)                  |
-| Motorcycle Catalog | Shop (`shop.html`), Product Detail (`product.html`)                                  |
-| Accessory Catalog  | Accessories (`accessories.html`), Accessory Detail (`accessory-product.html`)        |
-| Build & Compare    | Configurator (`configurator.html`), Compare (`compare.html`)                         |
-| Personal Lists     | Wishlist (`wishlist.html`), Search (`search.html`)                                   |
-| Commerce           | Cart (`cart.html`), Checkout (`checkout.html`), Order Success (`order-success.html`) |
-| Account            | Account (`account.html`), Orders (`orders.html`)                                     |
-| Ownership Services | Test Ride (`test-ride.html`), Service (`service.html`), Dealers (`dealers.html`)     |
-| Money              | Financing (`financing.html`), Insurance (`insurance.html`)                           |
-| Help               | Support (`support.html`), Contact (`contact.html`)                                   |
-| Auth               | Login (`login.html`), Register (`register.html`)                                     |
-| Legal & Errors     | Terms (`terms.html`), Privacy (`privacy.html`), 404 (`404.html`)                     |
+| Area | Pages |
+|---|---|
+| Brand & Content | Home (`index.html`), About (`about.html`), Stories (`stories.html`) |
+| Motorcycle Catalog | Shop (`shop.html`), Product Detail (`product.html`) |
+| Accessory Catalog | Accessories (`accessories.html`), Accessory Detail (`accessory-product.html`) |
+| Build & Compare | Configurator (`configurator.html`), Compare (`compare.html`) |
+| Personal Lists | Wishlist (`wishlist.html`), Search (`search.html`) |
+| Commerce | Cart (`cart.html`), Checkout (`checkout.html`), Order Success (`order-success.html`) |
+| Account | Account (`account.html`), Orders (`orders.html`) |
+| Ownership Services | Test Ride (`test-ride.html`), Service (`service.html`), Dealers (`dealers.html`) |
+| Money | Financing (`financing.html`), Insurance (`insurance.html`) |
+| Help | Support (`support.html`), Contact (`contact.html`) |
+| Auth | Login (`login.html`), Register (`register.html`) |
+| Legal & Errors | Terms (`terms.html`), Privacy (`privacy.html`), 404 (`404.html`) |
 
 Every page shares a common header (with a mega-menu under "Motorcycles"), footer, mobile navigation drawer, and toast-notification system, described in Chapter 5.
 
@@ -213,7 +213,6 @@ The current build does not implement role-based access control — every visitor
 **Who they are:** Anyone browsing the site without signing in. This is the default and only state the current build actually enforces.
 
 **What they can do:**
-
 - Browse, filter, sort, and search the full catalog.
 - View product details, specifications, and reviews.
 - Use the Configurator to build a motorcycle.
@@ -231,7 +230,6 @@ The current build does not implement role-based access control — every visitor
 **Who they are:** A visitor who has created an account (Register) or signed in (Login). In production, this identity should persist the customer's cart, wishlist, orders, garage, addresses, and preferences server-side, replacing the guest's browser-local storage.
 
 **What they can additionally do:**
-
 - View and edit their Profile (name, email, phone, date of birth).
 - View their **Garage** — motorcycles they own, with VIN, warranty status, and service-due indicators.
 - View real Order history and shipment tracking tied to purchases they actually made.
@@ -243,20 +241,20 @@ The current build does not implement role-based access control — every visitor
 
 **Who they are:** Staff at one of ARKO's physical dealer locations who would need to see and manage test-ride bookings and service appointments made against their specific dealer.
 
-**Current state:** No such interface exists. Test-ride and service bookings vanish into a client-side toast message; no dealer-facing system receives them. This role is named here because the _customer-facing_ booking forms (6.12, 6.13) clearly imply a receiving system on the other end, and any real implementation needs one even though it is out of scope for this document to specify in detail.
+**Current state:** No such interface exists. Test-ride and service bookings vanish into a client-side toast message; no dealer-facing system receives them. This role is named here because the *customer-facing* booking forms (6.12, 6.13) clearly imply a receiving system on the other end, and any real implementation needs one even though it is out of scope for this document to specify in detail.
 
 ### 4.4 Role Summary Table
 
-| Capability                            | Guest                            | Registered Customer           | Dealer Staff (not built)        |
-| ------------------------------------- | -------------------------------- | ----------------------------- | ------------------------------- |
-| Browse catalog, search, compare       | ✅                               | ✅                            | —                               |
-| Use Configurator                      | ✅                               | ✅                            | —                               |
-| Cart / Wishlist (device-local)        | ✅                               | ✅ (should be account-linked) | —                               |
-| Checkout / place order                | ✅                               | ✅                            | —                               |
-| View own order history                | ❌ (no identity to attach it to) | ✅                            | —                               |
-| Manage Garage, Addresses, Preferences | ❌                               | ✅                            | —                               |
-| Book test ride / service              | ✅ (submits booking)             | ✅ (submits booking)          | Would receive & manage bookings |
-| View/manage dealer bookings           | ❌                               | ❌                            | Intended, not built             |
+| Capability | Guest | Registered Customer | Dealer Staff (not built) |
+|---|---|---|---|
+| Browse catalog, search, compare | ✅ | ✅ | — |
+| Use Configurator | ✅ | ✅ | — |
+| Cart / Wishlist (device-local) | ✅ | ✅ (should be account-linked) | — |
+| Checkout / place order | ✅ | ✅ | — |
+| View own order history | ❌ (no identity to attach it to) | ✅ | — |
+| Manage Garage, Addresses, Preferences | ❌ | ✅ | — |
+| Book test ride / service | ✅ (submits booking) | ✅ (submits booking) | Would receive & manage bookings |
+| View/manage dealer bookings | ❌ | ❌ | Intended, not built |
 
 ---
 
@@ -271,9 +269,9 @@ The header is present on every page and includes:
 - **Logo**, linking Home.
 - **Home** link.
 - **Motorcycles** — a hover/click-triggered mega-menu with three columns:
-  - _By Category_: Enduro, Trail, Adventure, Performance, and a "View All" link — each pre-filtering the Shop page to that category via a URL parameter.
-  - _Featured_: direct links to the RVX, RVX Pro, and Performance RS product pages, plus a link into the Configurator.
-  - _Tools_: Compare Models, Book a Test Ride, Find a Dealer.
+  - *By Category*: Enduro, Trail, Adventure, Performance, and a "View All" link — each pre-filtering the Shop page to that category via a URL parameter.
+  - *Featured*: direct links to the RVX, RVX Pro, and Performance RS product pages, plus a link into the Configurator.
+  - *Tools*: Compare Models, Book a Test Ride, Find a Dealer.
 - **Accessories**, **Configurator**, **Dealers**, **Support** — top-level links.
 - **Right-hand icon cluster**: Search, Account, Wishlist (with count badge), Compare (with count badge), Cart (with count badge), and a prominent "Build" call-to-action button linking to the Configurator.
 - The header **compresses its padding** once the visitor scrolls more than 60px down the page, keeping it usable without taking excessive vertical space.
@@ -321,7 +319,6 @@ Because it recurs across Shop, Accessories, Search, Wishlist, Related Products, 
 **Entry points:** "Motorcycles" nav link, mega-menu category links, homepage "Choose Your Weapon" and category tiles, footer links.
 
 **Process:**
-
 1. The Shop page loads the full 11-model catalog and renders it as a grid of product cards.
 2. A filter sidebar lets the visitor narrow the results by:
    - **Category** (checkboxes: Enduro, Trail, Adventure, Performance), each showing a live count of matching models.
@@ -346,7 +343,6 @@ Functionally a smaller mirror of 6.1: a grid of the 12 accessories, filterable b
 **Entry points:** any product card's "View" link or card body, Quick View's "Full Details," search results, related-product sections, direct links from the mega-menu.
 
 **Process:**
-
 1. The page reads the product ID from the URL and looks it up across both motorcycles and accessories.
 2. Viewing the page silently records the product into the visitor's Recently Viewed list (capped at 8, most recent first, no duplicates).
 3. The page renders: a main gallery image with a strip of clickable thumbnails (clicking a thumbnail swaps the main image, no page reload); category, name, star rating with review count, description, price (with struck-through old price if on sale); a row of spec "chips" for the most important attributes; a color-swatch selector (if applicable) that updates a visible color-name label; for accessories with sizes, a size selector; for motorcycles, a set of variant groups (Battery, Suspension, Wheels), each rendered as a row of selectable option pills showing any price add-on; a quantity stepper (+/−, minimum 1); and three primary actions — **Add to Cart**, **Buy Now**, and **Save** (wishlist toggle).
@@ -391,7 +387,6 @@ Throughout, the **summary panel** lists every selected line item (base model, co
 **Entry points:** "Compare" nav/mega-menu link, the compare icon in the header (with its count badge), the compare toggle on any motorcycle product card, and a "Compare" action from the Wishlist.
 
 **Process:**
-
 1. The Compare page shows four slots. Filled slots show the model's image, name, price, and a "Remove" action; empty slots invite the visitor to add a model.
 2. An "Add Model to Compare" button opens a dropdown of every motorcycle **not already** in the comparison, each showing its name and price; selecting one adds it (unless the list is already at its 4-model cap, in which case an error toast explains the limit).
 3. Once at least one model is selected, a comparison table renders one column per selected model and one row per attribute: Category, Price, Range, Power, Weight, Top Speed, Battery, Charge Time, Rating, Reviews, Availability, and Colors (rendered as swatches).
@@ -406,7 +401,6 @@ Throughout, the **summary panel** lists every selected line item (base model, co
 **Entry points:** wishlist icon in the header (with count badge), the heart toggle on any product card or product detail page, mega-menu/footer/mobile-menu links.
 
 **Process:**
-
 1. The Wishlist page lists every saved product (motorcycles and accessories together) as cards showing image, category, name, rating, price, and three actions: **Move to Cart**, **Compare** (motorcycles only, functionally), and **Remove**.
 2. **Move to Cart** adds one unit of the item to the cart with no options selected, removes it from the wishlist, and confirms via toast — a one-step conversion from "saved for later" to "ready to buy."
 3. A "Move All to Cart" bulk action performs the same conversion for every item on the list in one step.
@@ -420,12 +414,10 @@ Throughout, the **summary panel** lists every selected line item (base model, co
 **Entry points:** Add to Cart from a product card, product detail page, accessory detail page, Configurator, or Quick View modal; the cart icon in the header (with count badge).
 
 **Adding an item:**
-
 1. Every add-to-cart action supplies a product ID, a quantity, and an options object (color, size, and/or a list of priced upgrades).
-2. The cart identifies a line item by the **combination** of product ID and its exact options — adding the same product with the same options increases the existing line's quantity; adding it with a _different_ color, size, or upgrade set creates a **new, separate line item**, even though both lines point at the same underlying product.
+2. The cart identifies a line item by the **combination** of product ID and its exact options — adding the same product with the same options increases the existing line's quantity; adding it with a *different* color, size, or upgrade set creates a **new, separate line item**, even though both lines point at the same underlying product.
 
 **Viewing and editing the cart (Cart page):**
-
 1. Each line item shows the product image, name, category, a human-readable summary of its selected options (color, and each upgrade with its price delta), a quantity stepper (+/−, floor of 1 — decrementing at 1 has no effect), a remove (trash) action, and the line's total price (unit price, including option deltas, multiplied by quantity).
 2. An order summary panel shows: item count, Subtotal (sum of every line total), Shipping (see 7.2), a promo-code input and Apply button, a Discount line (hidden until a valid code is applied), and a grand Total.
 3. "Continue Shopping" returns to the Shop page; "Clear Cart" empties the cart entirely (no confirmation dialog in the current build).
@@ -447,7 +439,6 @@ Throughout, the **summary panel** lists every selected line item (base model, co
 **Throughout all four steps**, a persistent order-summary sidebar recalculates and displays: each cart line with its quantity and price, a Subtotal, Shipping, VAT (computed at 19%), and a Total — visible regardless of which step the visitor is on, so the running cost is never hidden.
 
 **Placing the order:**
-
 1. Clicking "Place Order" clears the cart and navigates to the Order Success page.
 2. **Business rule (intended):** placing an order should create a persistent order record — visible afterward in the visitor's Order history if they are signed in, or retrievable via an order-confirmation email/reference if they are a guest — carrying the exact items, options, quantities, prices, chosen delivery method, payment method, and delivery address captured during the four steps above.
 
@@ -462,7 +453,6 @@ Immediately after placing an order, the visitor lands on a celebratory **Order S
 **Entry points:** "Orders" link from the mobile menu or Account sidebar, "View All Orders" from the Account Orders section.
 
 **Order list:**
-
 1. Orders are listed newest-relevant-first, each showing order ID, placement date, a status badge (Processing, Shipped, Delivered), a compact list of items with quantities, and action buttons that depend on status: **Details** always; **Track** for Processing/Shipped orders; **Reorder** for Delivered orders (currently a demo-only stub via toast).
 2. A filter control lets the visitor narrow the list to a specific status, or view all orders.
 3. Selecting "Details" replaces the list with a full breakdown: every item with image, quantity, and price; the order total; and the delivery address used for that order.
@@ -476,7 +466,6 @@ Immediately after placing an order, the visitor lands on a celebratory **Order S
 **Entry points:** "Book a Test Ride" mega-menu/footer/mobile-menu links, "Test Ride" CTAs on dealer cards, homepage "Ride Before You Decide" section.
 
 **Process:**
-
 1. A single-page form collects: motorcycle model (a select of seven in-stock/pre-order highlights, not necessarily the full 11-model catalog), dealer (a select of all 8 dealers), preferred date (a date picker whose minimum selectable date is tomorrow — same-day bookings are not offered), preferred time (a select of fixed half-day time slots), first name, last name, email, phone, motorcycle licence number, and a waiver-acknowledgment checkbox.
 2. A sidebar explains what to expect during the test ride, why to consider riding electric, and how to get further help.
 3. Submitting with any required field empty shows an error toast and does not proceed.
@@ -489,7 +478,6 @@ Immediately after placing an order, the visitor lands on a celebratory **Order S
 **Entry point:** "Book a Service" footer link, "Book Service" action from a Garage entry in Account.
 
 **Process:**
-
 1. The visitor selects a **Service Type** from three tiers, each shown as a selectable card with an icon, short description, and fixed price: **Routine Check** (€89 — brakes, tyres, software), **Battery Service** (€129 — health check and cell balancing), and **Major Service** (€249 — full inspection and tune).
 2. A form then collects: their motorcycle (a select of all 11 models), preferred date (minimum tomorrow, mirroring the test-ride rule), and presumably a dealer/time selection consistent with the test-ride pattern.
 3. Submitting shows a success toast and confirmation ("Service booked! Confirmation sent to your email.") and replaces the form with a confirmation panel and a link to the Account page.
@@ -501,7 +489,6 @@ Immediately after placing an order, the visitor lands on a celebratory **Order S
 **Entry points:** "Dealers" nav link, "Find a Dealer" footer/mega-menu links, dealer/service booking flows.
 
 **Process:**
-
 1. The page lists all 8 dealers as cards: name, full address, phone, and opening hours, plus two actions per card — **Test Ride** (links to the Test Ride form) and **Directions** (opens the address in Google Maps in a new tab).
 2. A search box filters the dealer list live by matching the visitor's input against dealer name, city, or country (case-insensitive, substring match).
 3. A simplified map view plots each (filtered) dealer as a pin, positioned using a linear projection of its latitude/longitude onto the visible map area — sufficient for a rough "where in Europe" overview, not a precise interactive map with zoom/pan.
@@ -515,7 +502,6 @@ Immediately after placing an order, the visitor lands on a celebratory **Order S
 **Entry points:** "Financing" footer/mobile-menu link, FAQ answers referencing financing, Checkout's implied but not-yet-wired financing option (see Chapter 11).
 
 **Process:**
-
 1. Three financing plans are presented side by side — **12, 24, and 36 months**, all at **0% APR** — each listing its benefits (no interest, no early-repayment fee, instant approval; the 24-month plan additionally offers a €0-down option) and an "Apply Now" action (currently a demo-only toast). The 24-month plan is visually marked as the most popular option.
 2. A four-step "How It Works" explainer walks through: choosing a bike, applying at checkout, signing digitally, and paying monthly.
 3. A **Monthly Payment Calculator** lets the visitor pick a specific motorcycle model (by price) from a dropdown, enter a down payment amount, and choose a term length (12/24/36 months); it then computes and displays the vehicle price, down payment, amount financed, and resulting monthly payment (amount financed ÷ term, rounded), recalculating live as any input changes. A down payment greater than the vehicle price is capped at the vehicle price.
@@ -528,7 +514,6 @@ Immediately after placing an order, the visitor lands on a celebratory **Order S
 **Entry point:** "Insurance" footer link, FAQ answers referencing insurance.
 
 **Process:**
-
 1. Four feature highlights introduce the value proposition: battery cover, charging-damage cover, instant digital claims, and EU-wide coverage.
 2. Three tiered plans are compared: **Essential** (€19/month — liability, theft, fire/natural disaster only), **Comprehensive** (€39/month, marked as the featured/popular option — adds battery degradation cover and accidental damage with a €250 excess), and **Premium** (€59/month — adds €0-excess accidental damage and up to €1,500 of helmet/gear cover). Each tier explicitly shows which features are included (checkmark) versus excluded (cross) relative to the tier above it.
 3. Each plan has a "Get a Quote" action (currently a demo-only toast).
@@ -555,12 +540,10 @@ The Account page is a single-page, tab-switching experience (no full page reload
 ### 6.18 Signing In and Registering
 
 **Login:**
-
 1. A form collects email and password, with a show/hide toggle on the password field, a "Remember me" option, and a "Forgot password?" link.
 2. Submitting shows a "Signing in..." toast and, after a short delay, redirects to the Account page — there is no real credential check; any input succeeds.
 
 **Register:**
-
 1. A form collects the fields needed to create an account (name, email, password, confirm password, and presumably a terms-acceptance checkbox), with the same password show/hide affordance.
 2. As the visitor types a password, a **strength meter** evaluates it against four criteria (length ≥ 8, contains an uppercase letter, contains a digit, contains a special character) and reflects the score as a colored bar and a label ranging from "Too weak" through "Strong."
 3. Submitting checks that the password and confirmation match, showing an error toast and halting if they don't; otherwise it shows a "Account created! Welcome to ARKO." success toast and redirects to the Account page after a short delay.
@@ -572,7 +555,6 @@ The Account page is a single-page, tab-switching experience (no full page reload
 **Entry points:** the search icon in the header, direct navigation to the Search page with a query parameter.
 
 **Process:**
-
 1. If the page loads with a query already present (e.g., from a link elsewhere), that query is applied immediately and results render on load; otherwise, a set of "quick link" suggestions is shown in place of results.
 2. As the visitor types into the search field (or presses Enter), matching is performed by substring search, case-insensitive, against each product's name, category, and description, across **both** motorcycles and accessories.
 3. A filter control (All / Motorcycles / Accessories) narrows which product type's matches are included.
@@ -584,7 +566,6 @@ The Account page is a single-page, tab-switching experience (no full page reload
 ### 6.20 Getting Support
 
 **Support / Help Center:**
-
 1. A search box at the top filters FAQ content live.
 2. Below it, category cards (Orders & Delivery, Battery & Charging, Warranty & Service, Test Rides & Purchasing) act as jump links, scrolling the page to that category's questions.
 3. The FAQ itself is an accordion — clicking a question expands its answer in place, and multiple questions can be open simultaneously.
@@ -592,7 +573,6 @@ The Account page is a single-page, tab-switching experience (no full page reload
 5. A contact form at the bottom of the page allows a visitor whose question wasn't answered to reach out directly, confirming submission via toast ("Message sent! We'll respond within 24 hours.") and clearing the form — no message is actually transmitted or stored in the current build.
 
 **Contact page:**
-
 1. A separate, dedicated page for reaching ARKO offers department routing (a set of selectable tabs — e.g., Sales, Support, Press, Partnerships — exactly one active at a time) alongside a contact form (name, email, subject, message).
 2. Submitting behaves identically to the Support page's contact form: a confirmation toast, form reset, and no real message delivery today.
 
@@ -617,7 +597,7 @@ The **cart subtotal** is the sum of every line's total price.
 
 ### 7.2 Shipping Rules
 
-A single, simple threshold rule applies on both the Cart summary and the Checkout summary: **orders with a subtotal over €1,000 ship free; orders at or under €1,000 incur a flat €49 shipping charge.** This is distinct from the Express Delivery option offered during Checkout step 2 (also €49, but for faster transit rather than as a subtotal-based shipping fee) — the current build's Cart-page shipping figure does not change based on which delivery method the visitor later selects in Checkout, since the delivery-method choice happens after the Cart page's totals are already shown. A production implementation should reconcile these two €49 figures into one coherent shipping model (e.g., free/standard/express, independent of order value; or value-based free shipping that also lets a customer _upgrade_ to paid express) rather than having two similarly priced but functionally separate shipping charges.
+A single, simple threshold rule applies on both the Cart summary and the Checkout summary: **orders with a subtotal over €1,000 ship free; orders at or under €1,000 incur a flat €49 shipping charge.** This is distinct from the Express Delivery option offered during Checkout step 2 (also €49, but for faster transit rather than as a subtotal-based shipping fee) — the current build's Cart-page shipping figure does not change based on which delivery method the visitor later selects in Checkout, since the delivery-method choice happens after the Cart page's totals are already shown. A production implementation should reconcile these two €49 figures into one coherent shipping model (e.g., free/standard/express, independent of order value; or value-based free shipping that also lets a customer *upgrade* to paid express) rather than having two similarly priced but functionally separate shipping charges.
 
 ### 7.3 Promo Codes
 
@@ -646,93 +626,93 @@ This chapter describes, in functional terms, the entities the platform manipulat
 
 ### 8.1 Motorcycle
 
-| Attribute     | Description                                                                                              |
-| ------------- | -------------------------------------------------------------------------------------------------------- |
-| ID            | Unique, URL-safe identifier (e.g., `rvx`)                                                                |
-| Name          | Display name (e.g., "ARKO RVX")                                                                          |
-| Category      | One of Enduro, Trail, Adventure, Performance                                                             |
-| Price         | Current selling price                                                                                    |
-| Old Price     | Optional; when present, displayed struck through to indicate a sale                                      |
-| Rating        | Headline star rating (used as a fallback when no reviews exist yet)                                      |
-| Review Count  | Number of reviews backing the headline rating                                                            |
-| Badge         | Optional merchandising label: Best Seller, New, Sale, Limited                                            |
-| Availability  | In Stock or Pre-Order                                                                                    |
-| Colors        | List of {name, hex} pairs                                                                                |
-| Specs         | Key/value technical attributes: range, power, weight, top speed, battery capacity, charge time           |
-| Image         | Primary listing image reference                                                                          |
-| Description   | Marketing paragraph                                                                                      |
-| Features      | Ordered list of feature bullets                                                                          |
-| Variants      | Named option groups (Battery, Suspension, Wheels), each a list of options with an optional price delta   |
-| Gallery       | Ordered list of detail-page image references                                                             |
-| Accessories   | List of accessory IDs recommended for this model (drives Configurator step 6 and detail-page cross-sell) |
-| Related       | List of other motorcycle IDs to feature as "Related Models"                                              |
-| Video Trailer | Reference to a hero/trailer video asset                                                                  |
+| Attribute | Description |
+|---|---|
+| ID | Unique, URL-safe identifier (e.g., `rvx`) |
+| Name | Display name (e.g., "ARKO RVX") |
+| Category | One of Enduro, Trail, Adventure, Performance |
+| Price | Current selling price |
+| Old Price | Optional; when present, displayed struck through to indicate a sale |
+| Rating | Headline star rating (used as a fallback when no reviews exist yet) |
+| Review Count | Number of reviews backing the headline rating |
+| Badge | Optional merchandising label: Best Seller, New, Sale, Limited |
+| Availability | In Stock or Pre-Order |
+| Colors | List of {name, hex} pairs |
+| Specs | Key/value technical attributes: range, power, weight, top speed, battery capacity, charge time |
+| Image | Primary listing image reference |
+| Description | Marketing paragraph |
+| Features | Ordered list of feature bullets |
+| Variants | Named option groups (Battery, Suspension, Wheels), each a list of options with an optional price delta |
+| Gallery | Ordered list of detail-page image references |
+| Accessories | List of accessory IDs recommended for this model (drives Configurator step 6 and detail-page cross-sell) |
+| Related | List of other motorcycle IDs to feature as "Related Models" |
+| Video Trailer | Reference to a hero/trailer video asset |
 
 ### 8.2 Accessory
 
 Shares Name, Price, Old Price, Rating, Review Count, Badge, Availability, Colors, Specs, Image, Description, Features, and Gallery with Motorcycle, plus:
 
-| Attribute | Description                                                 |
-| --------- | ----------------------------------------------------------- |
-| Category  | One of Riding Gear, Chargers, Batteries, Protection, Parts  |
-| Sizes     | Optional list of available sizes (used by jackets, helmets) |
+| Attribute | Description |
+|---|---|
+| Category | One of Riding Gear, Chargers, Batteries, Protection, Parts |
+| Sizes | Optional list of available sizes (used by jackets, helmets) |
 
 Accessories do not carry Variants, Accessories (no accessory-of-accessory upsell), Related, or Video Trailer.
 
 ### 8.3 Cart Line Item
 
-| Attribute  | Description                                                                                                                  |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Key        | Composite identity: product ID + serialized options, used to distinguish otherwise-identical products configured differently |
-| Product ID | Reference to a Motorcycle or Accessory                                                                                       |
-| Quantity   | Integer, minimum 1                                                                                                           |
-| Options    | Selected color, selected size (accessories), and a list of {name, price} upgrade selections                                  |
-| Added At   | Timestamp, for potential "recently added" sorting or cart-abandonment logic                                                  |
+| Attribute | Description |
+|---|---|
+| Key | Composite identity: product ID + serialized options, used to distinguish otherwise-identical products configured differently |
+| Product ID | Reference to a Motorcycle or Accessory |
+| Quantity | Integer, minimum 1 |
+| Options | Selected color, selected size (accessories), and a list of {name, price} upgrade selections |
+| Added At | Timestamp, for potential "recently added" sorting or cart-abandonment logic |
 
 ### 8.4 Order
 
-| Attribute        | Description                                                                                                                                                  |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ID               | Human-readable order reference (e.g., `ARK-2026-0847`)                                                                                                       |
-| Date             | Order placement date                                                                                                                                         |
-| Status           | Processing, Shipped, or Delivered                                                                                                                            |
-| Total            | Final charged amount                                                                                                                                         |
-| Items            | List of {name, quantity, price} at time of purchase                                                                                                          |
-| Delivery Address | The address the order was shipped to                                                                                                                         |
-| Tracking         | Carrier name, tracking number, and an ordered list of shipment stages, each with a name, a date (or placeholder if not yet reached), and a done/pending flag |
+| Attribute | Description |
+|---|---|
+| ID | Human-readable order reference (e.g., `ARK-2026-0847`) |
+| Date | Order placement date |
+| Status | Processing, Shipped, or Delivered |
+| Total | Final charged amount |
+| Items | List of {name, quantity, price} at time of purchase |
+| Delivery Address | The address the order was shipped to |
+| Tracking | Carrier name, tracking number, and an ordered list of shipment stages, each with a name, a date (or placeholder if not yet reached), and a done/pending flag |
 
 **Note:** a complete order record, in production, must additionally capture the customer identity (or guest contact details), the exact options selected per item (not just its name), the payment method used, any applied promo code/discount, and the VAT and shipping figures actually charged — all of which the current demo `Order` records omit.
 
 ### 8.5 Dealer
 
-| Attribute            | Description                              |
-| -------------------- | ---------------------------------------- |
-| ID                   | Unique identifier                        |
-| Name                 | Display name (e.g., "ARKO Berlin Mitte") |
-| City / Country       | Location                                 |
-| Address              | Street address                           |
-| Phone                | Contact number                           |
-| Latitude / Longitude | Used to plot the dealer on the map view  |
-| Hours                | Human-readable opening hours             |
+| Attribute | Description |
+|---|---|
+| ID | Unique identifier |
+| Name | Display name (e.g., "ARKO Berlin Mitte") |
+| City / Country | Location |
+| Address | Street address |
+| Phone | Contact number |
+| Latitude / Longitude | Used to plot the dealer on the map view |
+| Hours | Human-readable opening hours |
 
 ### 8.6 Review
 
-| Attribute  | Description                         |
-| ---------- | ----------------------------------- |
+| Attribute | Description |
+|---|---|
 | Product ID | Which product the review belongs to |
-| Author     | Display name                        |
-| Rating     | 1–5 stars                           |
-| Date       | Review date                         |
-| Title      | Short headline                      |
-| Body       | Review text                         |
+| Author | Display name |
+| Rating | 1–5 stars |
+| Date | Review date |
+| Title | Short headline |
+| Body | Review text |
 
 ### 8.7 FAQ Entry
 
-| Attribute | Description                                                                               |
-| --------- | ----------------------------------------------------------------------------------------- |
-| Category  | One of Orders & Delivery, Battery & Charging, Warranty & Service, Test Rides & Purchasing |
-| Question  | The FAQ question text                                                                     |
-| Answer    | The FAQ answer text                                                                       |
+| Attribute | Description |
+|---|---|
+| Category | One of Orders & Delivery, Battery & Charging, Warranty & Service, Test Rides & Purchasing |
+| Question | The FAQ question text |
+| Answer | The FAQ answer text |
 
 ### 8.8 Booking (Test Ride / Service) — Not Yet Persisted
 
@@ -813,7 +793,6 @@ A functional specification is only useful if it is honest about where the system
 ### 11.2 Consistency Check — Does the Platform Hold Together?
 
 **Holds together well:**
-
 - The shared product-card component (5.6), header/footer (5.1–5.3), and toast system (5.4) behave identically everywhere they appear, which keeps the browsing experience coherent across Shop, Accessories, Search, Wishlist, and Related-product sections.
 - The cart, wishlist, and compare badges update consistently and immediately from any page, because every page reads the same underlying local-storage-backed store.
 - Pricing display (formatted with the € symbol and thousands separators) is applied identically everywhere a price appears.
@@ -863,7 +842,7 @@ Because these collections live in browser local storage (2.2, 3.2), a customer w
 
 #### 11.3.10 Two Independent, Similarly-Priced Shipping Charges Don't Reconcile
 
-The Cart page's shipping figure (free above €1,000, otherwise a flat €49) and the Checkout Delivery step's Express option (also €49, for faster transit) are computed independently and never reconciled (7.2). A customer with a €1,200 cart sees "Free" shipping on the Cart page, then is offered a €49 "Express Delivery" upgrade at Checkout — which is a reasonable _product_ decision, but the current code does not actually make Express Delivery override or add to the Cart-page shipping figure in the Checkout total; the Checkout summary's Shipping line is still driven solely by the €1,000 subtotal threshold, regardless of which delivery method radio button is selected. Express Delivery is visually selectable but has no effect on the total charged.
+The Cart page's shipping figure (free above €1,000, otherwise a flat €49) and the Checkout Delivery step's Express option (also €49, for faster transit) are computed independently and never reconciled (7.2). A customer with a €1,200 cart sees "Free" shipping on the Cart page, then is offered a €49 "Express Delivery" upgrade at Checkout — which is a reasonable *product* decision, but the current code does not actually make Express Delivery override or add to the Cart-page shipping figure in the Checkout total; the Checkout summary's Shipping line is still driven solely by the €1,000 subtotal threshold, regardless of which delivery method radio button is selected. Express Delivery is visually selectable but has no effect on the total charged.
 
 #### 11.3.11 Every "Submission" Is a Simulation
 
@@ -883,38 +862,36 @@ Both booking forms (6.12, 6.13) enforce only that the date is no earlier than to
 
 ### 11.4 Completeness Check — Are Common Customer Scenarios Covered?
 
-| Customer Scenario                                                 | Covered Today?                                                       |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Browse motorcycles by category, price, range, availability, color | ✅ Fully functional                                                  |
-| Compare up to 4 motorcycles side by side                          | ✅ Functional (motorcycles only, see 11.3.12)                        |
-| Save items to revisit later                                       | ✅ Functional, device-local (see 11.3.9)                             |
-| Build a fully custom motorcycle                                   | ✅ Fully functional                                                  |
-| Add a configured build to cart and check out                      | ✅ Functional, subject to 11.3.1–11.3.4                              |
-| Apply a discount code                                             | ⚠️ Works on Cart, lost by Checkout (11.3.2)                          |
-| Pay the correct, fully-taxed total                                | ❌ VAT arithmetic defect (11.3.1)                                    |
-| See the address they entered reflected in order review            | ❌ Hardcoded address shown instead (11.3.4)                          |
-| Return later and see their real order history                     | ❌ Static demo orders only (11.3.7)                                  |
-| Track a real shipment                                             | ❌ No real order created to track (11.3.7)                           |
-| Attach financing or insurance to a purchase                       | ❌ Not wired into Checkout (11.3.8)                                  |
-| Sign in and have their cart follow them across devices            | ❌ Local-storage only (11.3.9)                                       |
-| Book a test ride or service appointment                           | ⚠️ Submits, but not received by any dealer system (11.3.11, 11.3.14) |
-| Leave a product review                                            | ❌ No-op ("demo feature") (11.3.13)                                  |
-| Contact support and get a real response                           | ❌ No message is actually transmitted (11.3.11)                      |
-| Find a dealer and get directions                                  | ✅ Fully functional                                                  |
-| Search the catalog                                                | ✅ Fully functional at current catalog size                          |
-| Manage account profile, addresses, preferences                    | ❌ Renders fixed demo data regardless of who's "logged in" (11.3.6)  |
+| Customer Scenario | Covered Today? |
+|---|---|
+| Browse motorcycles by category, price, range, availability, color | ✅ Fully functional |
+| Compare up to 4 motorcycles side by side | ✅ Functional (motorcycles only, see 11.3.12) |
+| Save items to revisit later | ✅ Functional, device-local (see 11.3.9) |
+| Build a fully custom motorcycle | ✅ Fully functional |
+| Add a configured build to cart and check out | ✅ Functional, subject to 11.3.1–11.3.4 |
+| Apply a discount code | ⚠️ Works on Cart, lost by Checkout (11.3.2) |
+| Pay the correct, fully-taxed total | ❌ VAT arithmetic defect (11.3.1) |
+| See the address they entered reflected in order review | ❌ Hardcoded address shown instead (11.3.4) |
+| Return later and see their real order history | ❌ Static demo orders only (11.3.7) |
+| Track a real shipment | ❌ No real order created to track (11.3.7) |
+| Attach financing or insurance to a purchase | ❌ Not wired into Checkout (11.3.8) |
+| Sign in and have their cart follow them across devices | ❌ Local-storage only (11.3.9) |
+| Book a test ride or service appointment | ⚠️ Submits, but not received by any dealer system (11.3.11, 11.3.14) |
+| Leave a product review | ❌ No-op ("demo feature") (11.3.13) |
+| Contact support and get a real response | ❌ No message is actually transmitted (11.3.11) |
+| Find a dealer and get directions | ✅ Fully functional |
+| Search the catalog | ✅ Fully functional at current catalog size |
+| Manage account profile, addresses, preferences | ❌ Renders fixed demo data regardless of who's "logged in" (11.3.6) |
 
 ### 11.5 Practicality Review — Is This a Sound Foundation?
 
 **Strengths worth preserving:**
-
 - The **information architecture is sound.** Every domain a motorcycle e-commerce brand needs — catalog, configurator, cart/checkout, account, dealer network, financing, insurance, support — is represented and cross-linked sensibly. A backend team has a clear, complete map of what to build services for.
 - The **customer-facing interaction patterns are consistent** (5.6, 10.1–10.5): shared product cards, shared toast system, shared empty-state pattern, shared stepper pattern. This consistency should be preserved, not re-invented, as real data replaces mock data.
 - The **functional data model (Chapter 8) is close to sufficient** as a first-pass schema brief — most entities need only a handful of additions (persisted options on order lines, actual product IDs on order lines, booking records) rather than a redesign.
 - The **pricing and filtering logic, aside from the specific defects in 11.3, is otherwise coherent** and would translate cleanly into a real backend's business logic layer.
 
 **What stands between this and a production launch:**
-
 - A real backend for authentication, catalog management, cart/order persistence, and payment processing — none of which exists today.
 - Correcting the specific arithmetic and data-flow defects in 11.3, several of which (11.3.1, 11.3.4) would cause customers to be shown incorrect charges or incorrect shipping information if launched as-is.
 - Turning every currently-simulated submission (bookings, contact forms, newsletter signup, reviews) into one that actually reaches a system capable of acting on it.
@@ -936,32 +913,32 @@ Both booking forms (6.12, 6.13) enforce only that the date is no earlier than to
 
 ## 12. Glossary of Key Terms
 
-| Term                    | Definition                                                                                                                           |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Accessory**           | A non-motorcycle catalog item: riding gear, chargers, batteries, protection, or parts.                                               |
-| **Availability**        | A product's purchasability state: In Stock or Pre-Order.                                                                             |
-| **Badge**               | A merchandising label on a product (Best Seller, New, Sale, Limited) used to draw attention in listings.                             |
-| **Cart Line Item**      | One entry in the cart, uniquely identified by a product plus its exact selected options.                                             |
-| **Compare**             | The side-by-side specification comparison feature, limited to up to 4 motorcycles at a time.                                         |
-| **Configurator**        | The guided, six-step "Build Your Own" flow for assembling a custom motorcycle configuration.                                         |
-| **Dealer**              | A physical ARKO retail/service location.                                                                                             |
-| **Garage**              | The section of a customer's Account listing the motorcycles they own.                                                                |
-| **Line Total**          | A cart line's unit price (base price plus upgrades) multiplied by its quantity.                                                      |
-| **Option (Cart)**       | A selected color, size, and/or set of priced upgrades attached to a cart line item.                                                  |
-| **Product Card**        | The shared, reusable visual and interactive unit used to represent a product in any grid across the site.                            |
-| **Promo Code**          | A code entered at Cart to apply a discount; only `ARKO10` (10% off subtotal) is currently supported.                                 |
-| **Quick View**          | A modal overlay showing key product details without leaving the current page.                                                        |
-| **Recently Viewed**     | A silently maintained list of up to the last 8 distinct products a visitor has viewed.                                               |
-| **Related Products**    | The curated set of other motorcycles (or accessories) a product's detail page recommends alongside it.                               |
-| **Service Tier**        | One of three fixed-price maintenance packages: Routine Check, Battery Service, Major Service.                                        |
-| **Shipping Threshold**  | The €1,000 subtotal above which standard shipping becomes free.                                                                      |
-| **Sticky Purchase Bar** | The purchase-action bar that appears at the bottom of a product page once the visitor has scrolled past the main purchase controls.  |
-| **Toast**               | A short-lived, non-blocking on-screen message confirming the result of an action.                                                    |
-| **Tracking Stage**      | One step in an order's shipment timeline (e.g., Order Placed, Shipped, Delivered), each marked done or pending.                      |
-| **Upgrade**             | A priced option within a variant group (e.g., an extended battery) that adds to a product's base price.                              |
-| **Variant Group**       | A named set of configurable options for a motorcycle — Battery, Suspension, or Wheels — each with its own priced choices.            |
-| **VAT**                 | Value-Added Tax, applied at a flat 19% of subtotal during Checkout in the current build (see 11.3.1 for a known calculation defect). |
-| **Wishlist**            | A flat, unqualified list of saved product IDs a visitor intends to revisit or purchase later.                                        |
+| Term | Definition |
+|---|---|
+| **Accessory** | A non-motorcycle catalog item: riding gear, chargers, batteries, protection, or parts. |
+| **Availability** | A product's purchasability state: In Stock or Pre-Order. |
+| **Badge** | A merchandising label on a product (Best Seller, New, Sale, Limited) used to draw attention in listings. |
+| **Cart Line Item** | One entry in the cart, uniquely identified by a product plus its exact selected options. |
+| **Compare** | The side-by-side specification comparison feature, limited to up to 4 motorcycles at a time. |
+| **Configurator** | The guided, six-step "Build Your Own" flow for assembling a custom motorcycle configuration. |
+| **Dealer** | A physical ARKO retail/service location. |
+| **Garage** | The section of a customer's Account listing the motorcycles they own. |
+| **Line Total** | A cart line's unit price (base price plus upgrades) multiplied by its quantity. |
+| **Option (Cart)** | A selected color, size, and/or set of priced upgrades attached to a cart line item. |
+| **Product Card** | The shared, reusable visual and interactive unit used to represent a product in any grid across the site. |
+| **Promo Code** | A code entered at Cart to apply a discount; only `ARKO10` (10% off subtotal) is currently supported. |
+| **Quick View** | A modal overlay showing key product details without leaving the current page. |
+| **Recently Viewed** | A silently maintained list of up to the last 8 distinct products a visitor has viewed. |
+| **Related Products** | The curated set of other motorcycles (or accessories) a product's detail page recommends alongside it. |
+| **Service Tier** | One of three fixed-price maintenance packages: Routine Check, Battery Service, Major Service. |
+| **Shipping Threshold** | The €1,000 subtotal above which standard shipping becomes free. |
+| **Sticky Purchase Bar** | The purchase-action bar that appears at the bottom of a product page once the visitor has scrolled past the main purchase controls. |
+| **Toast** | A short-lived, non-blocking on-screen message confirming the result of an action. |
+| **Tracking Stage** | One step in an order's shipment timeline (e.g., Order Placed, Shipped, Delivered), each marked done or pending. |
+| **Upgrade** | A priced option within a variant group (e.g., an extended battery) that adds to a product's base price. |
+| **Variant Group** | A named set of configurable options for a motorcycle — Battery, Suspension, or Wheels — each with its own priced choices. |
+| **VAT** | Value-Added Tax, applied at a flat 19% of subtotal during Checkout in the current build (see 11.3.1 for a known calculation defect). |
+| **Wishlist** | A flat, unqualified list of saved product IDs a visitor intends to revisit or purchase later. |
 
 ---
 
@@ -972,3 +949,4 @@ _End of Document_
 > **Document Version:** 1.0
 > **Specification Type:** Functional — Reverse-Engineered from the Existing ARKO Frontend Build
 > _This document should be reviewed against actual product intent by ARKO stakeholders, and the defects in Chapter 11 triaged and prioritized, before being used as a backend implementation brief._
+
